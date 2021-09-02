@@ -13,6 +13,9 @@
 		F1198C8626E13D7C0096A7BB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F1198C8426E13D7C0096A7BB /* Main.storyboard */; };
 		F1198C8826E13D7D0096A7BB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1198C8726E13D7D0096A7BB /* Assets.xcassets */; };
 		F1198C8B26E13D7D0096A7BB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F1198C8926E13D7D0096A7BB /* LaunchScreen.storyboard */; };
+		F1198C9426E13E5A0096A7BB /* ARData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1198C9326E13E5A0096A7BB /* ARData.swift */; };
+		F1198C9726E1420E0096A7BB /* Depth.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1198C9526E1420E0096A7BB /* Depth.swift */; };
+		F1198C9826E1420E0096A7BB /* DepthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1198C9626E1420E0096A7BB /* DepthData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +27,9 @@
 		F1198C8726E13D7D0096A7BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F1198C8A26E13D7D0096A7BB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F1198C8C26E13D7D0096A7BB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F1198C9326E13E5A0096A7BB /* ARData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARData.swift; sourceTree = "<group>"; };
+		F1198C9526E1420E0096A7BB /* Depth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Depth.swift; sourceTree = "<group>"; };
+		F1198C9626E1420E0096A7BB /* DepthData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DepthData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +62,7 @@
 		F1198C7D26E13D7C0096A7BB /* lidar-guide */ = {
 			isa = PBXGroup;
 			children = (
+				F1198C9226E13DDC0096A7BB /* LidarDepth */,
 				F1198C7E26E13D7C0096A7BB /* AppDelegate.swift */,
 				F1198C8026E13D7C0096A7BB /* SceneDelegate.swift */,
 				F1198C8226E13D7C0096A7BB /* ViewController.swift */,
@@ -65,6 +72,16 @@
 				F1198C8C26E13D7D0096A7BB /* Info.plist */,
 			);
 			path = "lidar-guide";
+			sourceTree = "<group>";
+		};
+		F1198C9226E13DDC0096A7BB /* LidarDepth */ = {
+			isa = PBXGroup;
+			children = (
+				F1198C9526E1420E0096A7BB /* Depth.swift */,
+				F1198C9626E1420E0096A7BB /* DepthData.swift */,
+				F1198C9326E13E5A0096A7BB /* ARData.swift */,
+			);
+			path = LidarDepth;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -137,9 +154,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F1198C9426E13E5A0096A7BB /* ARData.swift in Sources */,
+				F1198C9826E1420E0096A7BB /* DepthData.swift in Sources */,
 				F1198C8326E13D7C0096A7BB /* ViewController.swift in Sources */,
 				F1198C7F26E13D7C0096A7BB /* AppDelegate.swift in Sources */,
 				F1198C8126E13D7C0096A7BB /* SceneDelegate.swift in Sources */,
+				F1198C9726E1420E0096A7BB /* Depth.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
