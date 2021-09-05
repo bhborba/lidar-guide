@@ -13,6 +13,8 @@ class ViewController: UIViewController, ARSessionDelegate {
     
     var newDepthData:Depth?
     
+    var timer = Timer()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -48,7 +50,6 @@ class ViewController: UIViewController, ARSessionDelegate {
         
         // Configura classe para trabalhar com os valores de profundidade
         newDepthData = Depth(arARSession: arView.session, arConfiguration: configuration)
-        
  
     }
     
@@ -84,10 +85,10 @@ class ViewController: UIViewController, ARSessionDelegate {
      */
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
         /** Acesso ao depth data*/
-        guard let depthData = frame.sceneDepth else { return }
-        guard let smoothedSceneDepth = frame.smoothedSceneDepth else { return }
+        //guard let depthData = frame.sceneDepth else { return }
+        //guard let smoothedSceneDepth = frame.smoothedSceneDepth else { return }
       
-        let arData = ARData(depthImage: depthData.depthMap,
+        /*let arData = ARData(depthImage: depthData.depthMap,
                                     confidenceImage: depthData.confidenceMap,
                           depthSmoothImage: smoothedSceneDepth.depthMap,
                           confidenceSmoothImage: smoothedSceneDepth.confidenceMap,
@@ -95,22 +96,45 @@ class ViewController: UIViewController, ARSessionDelegate {
                           cameraIntrinsics: frame.camera.intrinsics,
                           cameraResolution: frame.camera.imageResolution,
                           deviceOrientation: UIDevice.current.orientation,
-                          screenResolution: UIScreen.main.bounds.size)
+                          screenResolution: UIScreen.main.bounds.size)*/
         //myFeedView.updateFeed(pixelBuffer: arData.depthImage)
         // execute change map setting*/
         
         if let newDepthData = newDepthData{
             let data = newDepthData.getDepthDistance()
-                print("x:128y:96distance\(data.get(x: 128, y: 96))")
+            let isTooClose = data.getIsTooClose()
+
+            if (isTooClose && !timer.isValid){
+                self.scheduledTimerWithTimeInterval()
+            } else if (!isTooClose && timer.isValid) {
+                timer.invalidate()
+            }
+
+            
+                /*print("x:128y:96distance\(data.get(x: 128, y: 96))")
                 print("x :0y:0)distance\(data.get(x: 0, y: 0))")
                 print("x :255y:191distance\(data.get(x: 255, y: 191))")
                 print("x:255y:191distance\(data.get(x: 0, y: 191))")
-                print("x:254y:191distance\(data.get(x: 254, y: 191))")
+                print("x:254y:191distance\(data.get(x: 254, y: 191))")*/
         }
+        
  
     }
     
-
+    /**
+            Timer de execucao para vibrar o celular
+     */
+    func scheduledTimerWithTimeInterval(){
+        // Scheduling timer to Call the function "updateCounting" with the interval of 1 seconds
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.vibrate), userInfo: nil, repeats: true)
+    }
+    
+    /**
+            Vibra o celular
+     */
+    @objc func vibrate() {
+        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+    }
 
 }
 

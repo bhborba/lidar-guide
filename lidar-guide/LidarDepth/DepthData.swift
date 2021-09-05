@@ -8,11 +8,23 @@
 
 class DepthData {
     private var data = Array(repeating: Array(repeating: Float(-1), count: 192), count: 256)
+    private var isTooClose = false
     func set(x:Int,y:Int,floatData:Float) {
          data[x][y]=floatData
     }
     func get(x:Int,y:Int) -> Float {
         return data[x][y]
+    }
+    func getAll() -> [[Float]] {
+        return data
+    }
+    
+    func setIsTooClose(value:Bool){
+        isTooClose = value
+    }
+    
+    func getIsTooClose() -> Bool {
+        return isTooClose
     }
     
 }

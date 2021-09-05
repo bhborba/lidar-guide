@@ -16,6 +16,7 @@
 		F1198C9426E13E5A0096A7BB /* ARData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1198C9326E13E5A0096A7BB /* ARData.swift */; };
 		F1198C9726E1420E0096A7BB /* Depth.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1198C9526E1420E0096A7BB /* Depth.swift */; };
 		F1198C9826E1420E0096A7BB /* DepthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1198C9626E1420E0096A7BB /* DepthData.swift */; };
+		F140915126E57A3200336D35 /* DispatchQueue+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F140915026E57A3200336D35 /* DispatchQueue+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		F1198C9326E13E5A0096A7BB /* ARData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARData.swift; sourceTree = "<group>"; };
 		F1198C9526E1420E0096A7BB /* Depth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Depth.swift; sourceTree = "<group>"; };
 		F1198C9626E1420E0096A7BB /* DepthData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DepthData.swift; sourceTree = "<group>"; };
+		F140915026E57A3200336D35 /* DispatchQueue+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DispatchQueue+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,6 +48,7 @@
 		F1198C7226E13D7C0096A7BB = {
 			isa = PBXGroup;
 			children = (
+				F140915026E57A3200336D35 /* DispatchQueue+Extensions.swift */,
 				F1198C7D26E13D7C0096A7BB /* lidar-guide */,
 				F1198C7C26E13D7C0096A7BB /* Products */,
 			);
@@ -156,6 +159,7 @@
 			files = (
 				F1198C9426E13E5A0096A7BB /* ARData.swift in Sources */,
 				F1198C9826E1420E0096A7BB /* DepthData.swift in Sources */,
+				F140915126E57A3200336D35 /* DispatchQueue+Extensions.swift in Sources */,
 				F1198C8326E13D7C0096A7BB /* ViewController.swift in Sources */,
 				F1198C7F26E13D7C0096A7BB /* AppDelegate.swift in Sources */,
 				F1198C8126E13D7C0096A7BB /* SceneDelegate.swift in Sources */,

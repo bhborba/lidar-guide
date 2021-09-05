@@ -7,6 +7,7 @@
 //
 
 import ARKit
+import AudioToolbox
 class Depth {
     private let arARSession:ARSession
     private var depthData:ARDepthData?
@@ -35,14 +36,16 @@ class Depth {
             for y in 0...depthHeight-1 {
                 for x in 0...depthWidth-1 {
                     let distanceAtXYPoint = floatBuffer[y*depthWidth+x]
+                    if (distanceAtXYPoint < 0.5) {
+                        depthFloatData.setIsTooClose(value: true)
+                        break
+                    }
                     depthFloatData.set(x: x, y: y, floatData: distanceAtXYPoint)
                 }
             }
+
         }
-           
-       
-        
-        
         return depthFloatData
     }
+
 }
