@@ -37,7 +37,13 @@ class Depth {
                 for x in 0...depthWidth-1 {
                     let distanceAtXYPoint = floatBuffer[y*depthWidth+x]
                     if (distanceAtXYPoint < 0.5) {
+                        if (y > 96){
+                            depthFloatData.setTooCloseDirection(value: "left")
+                        } else {
+                            depthFloatData.setTooCloseDirection(value: "right")
+                        }
                         depthFloatData.setIsTooClose(value: true)
+                        
                         break
                     }
                     depthFloatData.set(x: x, y: y, floatData: distanceAtXYPoint)

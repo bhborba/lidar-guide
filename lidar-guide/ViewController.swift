@@ -15,6 +15,8 @@ class ViewController: UIViewController, ARSessionDelegate {
     
     var timer = Timer()
     
+    var oldDirection = "";
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -36,9 +38,10 @@ class ViewController: UIViewController, ARSessionDelegate {
         // ARView on its own does not turn on mesh classification.
         arView.automaticallyConfigureSession = false
         let configuration = ARWorldTrackingConfiguration()
-        configuration.sceneReconstruction = .meshWithClassification
         
-        configuration.environmentTexturing = .automatic
+        //configuration.sceneReconstruction = .meshWithClassification
+        
+        //configuration.environmentTexturing = .automatic
         
         // Add plane detection
         configuration.planeDetection = [.horizontal, .vertical]
@@ -103,6 +106,12 @@ class ViewController: UIViewController, ARSessionDelegate {
         if let newDepthData = newDepthData{
             let data = newDepthData.getDepthDistance()
             let isTooClose = data.getIsTooClose()
+            let direction = data.getTooCloseDirection()
+            
+            if (direction != oldDirection){
+                oldDirection = direction
+            }
+            
 
             if (isTooClose && !timer.isValid){
                 self.scheduledTimerWithTimeInterval()
@@ -126,6 +135,7 @@ class ViewController: UIViewController, ARSessionDelegate {
      */
     func scheduledTimerWithTimeInterval(){
         // Scheduling timer to Call the function "updateCounting" with the interval of 1 seconds
+        
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.vibrate), userInfo: nil, repeats: true)
     }
     
@@ -133,7 +143,13 @@ class ViewController: UIViewController, ARSessionDelegate {
             Vibra o celular
      */
     @objc func vibrate() {
-        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+        if (oldDirection == "left"){
+            UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+        } else if (oldDirection == "right"){
+            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+        }
+    
+
     }
 
 }
