@@ -48,6 +48,7 @@ class ViewController: UIViewController, ARSessionDelegate {
         
         /** Adicionado sceneDepth **/
         configuration.frameSemantics = [.sceneDepth, .smoothedSceneDepth]
+    
         
         arView.session.run(configuration)
         

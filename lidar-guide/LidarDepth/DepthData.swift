@@ -6,10 +6,13 @@
 //  Copyright © 2021 Apple. All rights reserved.
 //
 
+import Accelerate
+
 class DepthData {
     private var data = Array(repeating: Array(repeating: Float(-1), count: 192), count: 256)
     private var isTooClose = false
     private var tooCloseDirection = ""
+    private let matrixSize = Float(96*256)
     func set(x:Int,y:Int,floatData:Float) {
          data[x][y]=floatData
     }
@@ -34,6 +37,20 @@ class DepthData {
     
     func getTooCloseDirection() -> String {
         return tooCloseDirection
+    }
+    
+    func getClearestDirection() -> Void {
+        let matrixLeft: [Float] = data.flatMap { $0.dropLast(96) }
+        let matrixLeftMedia = (vDSP.sum(matrixLeft)/matrixSize)
+       
+        let matrixRight: [Float] = data.flatMap { $0.dropFirst(96) }
+        let matrixRightMedia = (vDSP.sum(matrixRight)/matrixSize)
+        
+        (matrixRightMedia > matrixLeftMedia) ?
+            setTooCloseDirection(value:"right")
+        :
+            setTooCloseDirection(value:"left")
+        
     }
     
 }

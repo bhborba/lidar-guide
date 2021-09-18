@@ -33,21 +33,20 @@ class Depth {
             let depthHeight = CVPixelBufferGetHeight(depth)
             CVPixelBufferLockBaseAddress(depth, CVPixelBufferLockFlags(rawValue: 0))
             let floatBuffer = unsafeBitCast(CVPixelBufferGetBaseAddress(depth), to: UnsafeMutablePointer<Float32>.self)
+            var isTooClose = false
+            // Esquerda
             for y in 0...depthHeight-1 {
                 for x in 0...depthWidth-1 {
                     let distanceAtXYPoint = floatBuffer[y*depthWidth+x]
-                    if (distanceAtXYPoint < 0.5) {
-                        if (y > 96){
-                            depthFloatData.setTooCloseDirection(value: "left")
-                        } else {
-                            depthFloatData.setTooCloseDirection(value: "right")
-                        }
+                    if (!isTooClose && distanceAtXYPoint < 0.5) {
                         depthFloatData.setIsTooClose(value: true)
-                        
-                        break
+                        isTooClose = true
                     }
                     depthFloatData.set(x: x, y: y, floatData: distanceAtXYPoint)
                 }
+            }
+            if (isTooClose){
+                depthFloatData.getClearestDirection()
             }
 
         }
