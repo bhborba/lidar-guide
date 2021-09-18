@@ -17,6 +17,10 @@ class ViewController: UIViewController, ARSessionDelegate {
     
     var oldDirection = "";
     
+    var lastProcessedFrame: ARFrame?
+    
+    let dispatchQueue = DispatchQueue(label:"con",attributes:.concurrent)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -47,7 +51,7 @@ class ViewController: UIViewController, ARSessionDelegate {
         configuration.planeDetection = [.horizontal, .vertical]
         
         /** Adicionado sceneDepth **/
-        configuration.frameSemantics = [.sceneDepth, .smoothedSceneDepth]
+        configuration.frameSemantics = [.sceneDepth]
     
         
         arView.session.run(configuration)
@@ -83,11 +87,50 @@ class ViewController: UIViewController, ARSessionDelegate {
         }
     }
     
+    private func shouldProcessFrame(_ frame: ARFrame) -> Bool {
+      guard let lastProcessedFrame = lastProcessedFrame else {
+        // Always process the first frame
+        return true
+      }
+      return frame.timestamp - lastProcessedFrame.timestamp >= 0.032 // 32ms for 30fps
+    }
     
     /**
      Isso aqui chama sozinho dependendo da assinatura da funcao
      */
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        dispatchQueue.async {
+            self.updateDepthData(with: frame)
+          }
+    }
+    
+    
+    func updateDepthData(with frame: ARFrame){
+        
+        guard shouldProcessFrame(frame) else {
+          // Less than 32ms with the previous frame
+          return
+        }
+        lastProcessedFrame = frame
+    
+        if let newDepthData = newDepthData{
+            
+            let data = newDepthData.getDepthDistance()
+            let isTooClose = data.getIsTooClose()
+            let direction = data.getTooCloseDirection()
+            
+            if (direction != oldDirection){
+                oldDirection = direction
+            }
+            
+
+            if (isTooClose && !timer.isValid){
+                scheduledTimerWithTimeInterval()
+            } else if (!isTooClose && timer.isValid) {
+                timer.invalidate()
+            }
+        }
+        
         /** Acesso ao depth data*/
         //guard let depthData = frame.sceneDepth else { return }
         //guard let smoothedSceneDepth = frame.smoothedSceneDepth else { return }
@@ -103,32 +146,6 @@ class ViewController: UIViewController, ARSessionDelegate {
                           screenResolution: UIScreen.main.bounds.size)*/
         //myFeedView.updateFeed(pixelBuffer: arData.depthImage)
         // execute change map setting*/
-        
-        if let newDepthData = newDepthData{
-            let data = newDepthData.getDepthDistance()
-            let isTooClose = data.getIsTooClose()
-            let direction = data.getTooCloseDirection()
-            
-            if (direction != oldDirection){
-                oldDirection = direction
-            }
-            
-
-            if (isTooClose && !timer.isValid){
-                self.scheduledTimerWithTimeInterval()
-            } else if (!isTooClose && timer.isValid) {
-                timer.invalidate()
-            }
-
-            
-                /*print("x:128y:96distance\(data.get(x: 128, y: 96))")
-                print("x :0y:0)distance\(data.get(x: 0, y: 0))")
-                print("x :255y:191distance\(data.get(x: 255, y: 191))")
-                print("x:255y:191distance\(data.get(x: 0, y: 191))")
-                print("x:254y:191distance\(data.get(x: 254, y: 191))")*/
-        }
-        
- 
     }
     
     /**
@@ -136,21 +153,21 @@ class ViewController: UIViewController, ARSessionDelegate {
      */
     func scheduledTimerWithTimeInterval(){
         // Scheduling timer to Call the function "updateCounting" with the interval of 1 seconds
-        
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.vibrate), userInfo: nil, repeats: true)
+        DispatchQueue.main.async {
+            self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.vibrate), userInfo: nil, repeats: true)
+        }
     }
     
     /**
             Vibra o celular
      */
     @objc func vibrate() {
+        print(oldDirection)
         if (oldDirection == "left"){
             UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         } else if (oldDirection == "right"){
             AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
         }
-    
-
     }
 
 }

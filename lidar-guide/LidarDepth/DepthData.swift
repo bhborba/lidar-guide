@@ -53,4 +53,10 @@ class DepthData {
         
     }
     
+    func validateIsTooClose() -> Bool {
+        let matrix: [Float] = data.flatMap { $0 }
+        let hasPointTooClose = matrix.filter{point in point < 0.5}
+        return !hasPointTooClose.isEmpty
+    }
+    
 }

@@ -45,7 +45,9 @@ class Depth {
                     depthFloatData.set(x: x, y: y, floatData: distanceAtXYPoint)
                 }
             }
+            //let isTooClose = depthFloatData.getIsTooClose()
             if (isTooClose){
+               // depthFloatData.setIsTooClose(value: true)
                 depthFloatData.getClearestDirection()
             }
 
