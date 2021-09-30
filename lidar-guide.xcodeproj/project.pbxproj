@@ -23,6 +23,12 @@
 		F149206E26F7B190002A8EC6 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F149206D26F7B190002A8EC6 /* Throttler.swift */; };
 		F149207026F7B699002A8EC6 /* SCNVector3+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F149206F26F7B699002A8EC6 /* SCNVector3+Extension.swift */; };
 		F149207226F7B817002A8EC6 /* BubbleNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F149207126F7B817002A8EC6 /* BubbleNode.swift */; };
+		F15E591D26FFD9F2000AB7C6 /* IndoorObjects.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = F15E591C26FFD9F2000AB7C6 /* IndoorObjects.mlmodel */; };
+		F15E591F270128A2000AB7C6 /* IndoorMeh.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = F15E591E270128A2000AB7C6 /* IndoorMeh.mlmodel */; };
+		F1850B332702918B00E98DBE /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1850B322702918B00E98DBE /* RoundedButton.swift */; };
+		F1850B352702923500E98DBE /* Scene+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1850B342702923500E98DBE /* Scene+Extension.swift */; };
+		F1850B372702936300E98DBE /* ARMeshGeometry+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1850B362702936300E98DBE /* ARMeshGeometry+Extension.swift */; };
+		F1850B39270293DD00E98DBE /* simd_float4x4+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1850B38270293DD00E98DBE /* simd_float4x4+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +50,12 @@
 		F149206D26F7B190002A8EC6 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
 		F149206F26F7B699002A8EC6 /* SCNVector3+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNVector3+Extension.swift"; sourceTree = "<group>"; };
 		F149207126F7B817002A8EC6 /* BubbleNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BubbleNode.swift; sourceTree = "<group>"; };
+		F15E591C26FFD9F2000AB7C6 /* IndoorObjects.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = IndoorObjects.mlmodel; sourceTree = "<group>"; };
+		F15E591E270128A2000AB7C6 /* IndoorMeh.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = IndoorMeh.mlmodel; sourceTree = "<group>"; };
+		F1850B322702918B00E98DBE /* RoundedButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
+		F1850B342702923500E98DBE /* Scene+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Scene+Extension.swift"; sourceTree = "<group>"; };
+		F1850B362702936300E98DBE /* ARMeshGeometry+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARMeshGeometry+Extension.swift"; sourceTree = "<group>"; };
+		F1850B38270293DD00E98DBE /* simd_float4x4+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "simd_float4x4+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +131,9 @@
 		F149206726F7AEAD002A8EC6 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				F1850B322702918B00E98DBE /* RoundedButton.swift */,
+				F15E591E270128A2000AB7C6 /* IndoorMeh.mlmodel */,
+				F15E591C26FFD9F2000AB7C6 /* IndoorObjects.mlmodel */,
 				F1198C8426E13D7C0096A7BB /* Main.storyboard */,
 				F149206826F7AF13002A8EC6 /* YOLOv3Int8LUT.mlmodel */,
 				F1198C8226E13D7C0096A7BB /* ViewController.swift */,
@@ -133,6 +148,9 @@
 			children = (
 				F149206B26F7AFD5002A8EC6 /* UIDevice+Extension.swift */,
 				F149206F26F7B699002A8EC6 /* SCNVector3+Extension.swift */,
+				F1850B342702923500E98DBE /* Scene+Extension.swift */,
+				F1850B362702936300E98DBE /* ARMeshGeometry+Extension.swift */,
+				F1850B38270293DD00E98DBE /* simd_float4x4+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -211,11 +229,17 @@
 				F1198C9426E13E5A0096A7BB /* ARData.swift in Sources */,
 				F1198C9826E1420E0096A7BB /* DepthData.swift in Sources */,
 				F149207026F7B699002A8EC6 /* SCNVector3+Extension.swift in Sources */,
+				F15E591D26FFD9F2000AB7C6 /* IndoorObjects.mlmodel in Sources */,
 				F149206C26F7AFD5002A8EC6 /* UIDevice+Extension.swift in Sources */,
+				F15E591F270128A2000AB7C6 /* IndoorMeh.mlmodel in Sources */,
+				F1850B372702936300E98DBE /* ARMeshGeometry+Extension.swift in Sources */,
 				F140915126E57A3200336D35 /* DispatchQueue+Extensions.swift in Sources */,
 				F1198C8326E13D7C0096A7BB /* ViewController.swift in Sources */,
 				F1198C7F26E13D7C0096A7BB /* AppDelegate.swift in Sources */,
 				F149206E26F7B190002A8EC6 /* Throttler.swift in Sources */,
+				F1850B332702918B00E98DBE /* RoundedButton.swift in Sources */,
+				F1850B39270293DD00E98DBE /* simd_float4x4+Extension.swift in Sources */,
+				F1850B352702923500E98DBE /* Scene+Extension.swift in Sources */,
 				F149207226F7B817002A8EC6 /* BubbleNode.swift in Sources */,
 				F1198C8126E13D7C0096A7BB /* SceneDelegate.swift in Sources */,
 				F149206626F7AE69002A8EC6 /* ObjectDetectionService.swift in Sources */,
