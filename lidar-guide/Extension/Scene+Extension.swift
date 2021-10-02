@@ -12,6 +12,7 @@ extension Scene {
     // Add an anchor and remove it from the scene after the specified number of seconds.
 /// - Tag: AddAnchorExtension
     func addAnchor(_ anchor: HasAnchoring, removeAfter seconds: TimeInterval) {
+        
         guard let model = anchor.children.first as? HasPhysics else {
             return
         }
@@ -22,8 +23,12 @@ extension Scene {
             model.physicsBody = .init()
         }
         // ... but prevent it from being affected by simulation forces for now.
-        model.physicsBody?.mode = .kinematic
-        
+        model.physicsBody? = PhysicsBodyComponent(shapes: [.generateBox(size: .one)],
+                                                 mass: 1.0,
+                                             material: .default,
+                                             mode: .kinematic)
+     
+        model.name = "Object"
         addAnchor(anchor)
         // Making the physics body dynamic at this time will let the model be affected by forces.
         Timer.scheduledTimer(withTimeInterval: seconds, repeats: false) { (timer) in

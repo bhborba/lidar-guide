@@ -224,15 +224,21 @@ class ViewController: UIViewController, ARSessionDelegate {
     
     func addAnnotation(rectOfInterest rect: CGRect, text: String) {
         let point = CGPoint(x: rect.midX, y: rect.midY)
-        /*guard let raycastQuery = arView.makeRaycastQuery(from: point,
-                                allowing: .existingPlaneInfinite,
-                                alignment: .horizontal),
-        let raycastResult = arView.raycast(raycastQuery).first else { return }*/
-        print(text)
+        
+        // Find for an already placed objetc
+        let alreadyFoundObject = arView.scene.findEntity(named: text)
+        
+        // If object is already identified, just skips
+        if (alreadyFoundObject != nil){
+            return
+        }
+        
+        
         if let result = arView.raycast(from: point, allowing: .estimatedPlane, alignment: .any).first {
             // ...
             // 2. Visualize the intersection point of the ray with the real-world surface.
             let resultAnchor = AnchorEntity(world: result.worldTransform)
+            
             //resultAnchor.addChild(sphere(radius: 0.01, color: .lightGray))
             //arView.scene.addAnchor(resultAnchor, removeAfter: 3)
             
@@ -259,14 +265,16 @@ class ViewController: UIViewController, ARSessionDelegate {
                     resultWithCameraOrientation.translation = textPositionInWorldCoordinates
                     let textAnchor = AnchorEntity(world: resultWithCameraOrientation.matrix)
                     textAnchor.addChild(textEntity)
-                    self.arView.scene.addAnchor(textAnchor, removeAfter: 3)
+                    textAnchor.name = "TEXT NAME"
+                    self.arView.scene.addAnchor(textAnchor, removeAfter: 10)
 
                     // 8. Visualize the center of the face (if any was found) for three seconds.
                     //    It is possible that this is nil, e.g. if there was no face close enough to the tap location.
                     if let centerOfFace = centerOfFace {
                         let faceAnchor = AnchorEntity(world: centerOfFace)
+                        faceAnchor.name = text
                         faceAnchor.addChild(self.sphere(radius: 0.01, color: .blue))
-                        self.arView.scene.addAnchor(faceAnchor, removeAfter: 3)
+                        self.arView.scene.addAnchor(faceAnchor, removeAfter: 10)
                     }
                 }
             }
