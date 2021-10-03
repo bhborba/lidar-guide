@@ -7,6 +7,7 @@
 
 import RealityKit
 import ARKit
+import AVFoundation
 
 class ViewController: UIViewController, ARSessionDelegate {
     @IBOutlet weak var arView: ARView!
@@ -67,6 +68,13 @@ class ViewController: UIViewController, ARSessionDelegate {
         
         // Configura classe para trabalhar com os valores de profundidade
         newDepthData = Depth(arARSession: arView.session, arConfiguration: configuration)
+        
+        // Play audio even with de silent mode on
+        do {
+              try AVAudioSession.sharedInstance().setCategory(.playback)
+           } catch(let error) {
+               print(error.localizedDescription)
+           }
  
     }
     
@@ -267,6 +275,18 @@ class ViewController: UIViewController, ARSessionDelegate {
                     textAnchor.addChild(textEntity)
                     textAnchor.name = "TEXT NAME"
                     self.arView.scene.addAnchor(textAnchor, removeAfter: 10)
+                    
+                   
+                    /*
+                     Text to speech
+                     */
+                    let utterance = AVSpeechUtterance(string: text)
+                    utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+                    //utterance.rate = 0.1
+
+                    let synthesizer = AVSpeechSynthesizer()
+                    synthesizer.speak(utterance)
+                   
 
                     // 8. Visualize the center of the face (if any was found) for three seconds.
                     //    It is possible that this is nil, e.g. if there was no face close enough to the tap location.
