@@ -127,7 +127,7 @@ class ViewController: UIViewController, ARSessionDelegate {
         
         if let lastLocation = lastLocation {
             let speed = (lastLocation - currentPositionOfCamera).length()
-            isLoopShouldContinue = speed < 0.0025
+            isLoopShouldContinue = speed < 0.0085
         }
         lastLocation = currentPositionOfCamera
     }
@@ -245,7 +245,7 @@ class ViewController: UIViewController, ARSessionDelegate {
         if let result = arView.raycast(from: point, allowing: .estimatedPlane, alignment: .any).first {
             // ...
             // 2. Visualize the intersection point of the ray with the real-world surface.
-            let resultAnchor = AnchorEntity(world: result.worldTransform)
+            //let resultAnchor = AnchorEntity(world: result.worldTransform)
             
             //resultAnchor.addChild(sphere(radius: 0.01, color: .lightGray))
             //arView.scene.addAnchor(resultAnchor, removeAfter: 3)
@@ -298,12 +298,6 @@ class ViewController: UIViewController, ARSessionDelegate {
                     }
                 }
             }
-        
-        
-        
-            /*let position = SCNVector3(raycastResult.worldTransform.columns.3.x,
-                                          raycastResult.worldTransform.columns.3.y,
-                                          raycastResult.worldTransform.columns.3.z)*/
         
         }
     }
