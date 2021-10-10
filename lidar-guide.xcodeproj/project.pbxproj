@@ -16,6 +16,7 @@
 		F1198C9426E13E5A0096A7BB /* ARData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1198C9326E13E5A0096A7BB /* ARData.swift */; };
 		F1198C9726E1420E0096A7BB /* Depth.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1198C9526E1420E0096A7BB /* Depth.swift */; };
 		F1198C9826E1420E0096A7BB /* DepthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1198C9626E1420E0096A7BB /* DepthData.swift */; };
+		F135D50C27121385006D70BA /* ARMeshClassification+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F135D50B27121385006D70BA /* ARMeshClassification+Extension.swift */; };
 		F140915126E57A3200336D35 /* DispatchQueue+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F140915026E57A3200336D35 /* DispatchQueue+Extensions.swift */; };
 		F149206626F7AE69002A8EC6 /* ObjectDetectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F149206526F7AE69002A8EC6 /* ObjectDetectionService.swift */; };
 		F149206926F7AF13002A8EC6 /* YOLOv3Int8LUT.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = F149206826F7AF13002A8EC6 /* YOLOv3Int8LUT.mlmodel */; };
@@ -43,6 +44,7 @@
 		F1198C9326E13E5A0096A7BB /* ARData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARData.swift; sourceTree = "<group>"; };
 		F1198C9526E1420E0096A7BB /* Depth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Depth.swift; sourceTree = "<group>"; };
 		F1198C9626E1420E0096A7BB /* DepthData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DepthData.swift; sourceTree = "<group>"; };
+		F135D50B27121385006D70BA /* ARMeshClassification+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARMeshClassification+Extension.swift"; sourceTree = "<group>"; };
 		F140915026E57A3200336D35 /* DispatchQueue+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DispatchQueue+Extensions.swift"; sourceTree = "<group>"; };
 		F149206526F7AE69002A8EC6 /* ObjectDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDetectionService.swift; sourceTree = "<group>"; };
 		F149206826F7AF13002A8EC6 /* YOLOv3Int8LUT.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = YOLOv3Int8LUT.mlmodel; sourceTree = "<group>"; };
@@ -151,6 +153,7 @@
 				F1850B342702923500E98DBE /* Scene+Extension.swift */,
 				F1850B362702936300E98DBE /* ARMeshGeometry+Extension.swift */,
 				F1850B38270293DD00E98DBE /* simd_float4x4+Extension.swift */,
+				F135D50B27121385006D70BA /* ARMeshClassification+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -236,6 +239,7 @@
 				F140915126E57A3200336D35 /* DispatchQueue+Extensions.swift in Sources */,
 				F1198C8326E13D7C0096A7BB /* ViewController.swift in Sources */,
 				F1198C7F26E13D7C0096A7BB /* AppDelegate.swift in Sources */,
+				F135D50C27121385006D70BA /* ARMeshClassification+Extension.swift in Sources */,
 				F149206E26F7B190002A8EC6 /* Throttler.swift in Sources */,
 				F1850B332702918B00E98DBE /* RoundedButton.swift in Sources */,
 				F1850B39270293DD00E98DBE /* simd_float4x4+Extension.swift in Sources */,
