@@ -8,8 +8,9 @@
 import RealityKit
 import ARKit
 import AVFoundation
+import WatchConnectivity
 
-class ViewController: UIViewController, ARSessionDelegate {
+class ViewController: UIViewController, ARSessionDelegate, WCSessionDelegate {
     @IBOutlet weak var arView: ARView!
     
     var newDepthData:Depth?
@@ -30,6 +31,9 @@ class ViewController: UIViewController, ARSessionDelegate {
     var isLoopShouldContinue = true
     
     var objectDetectionService = ObjectDetectionService()
+    
+    // Last message send to apple watch
+    var lastMessage: CFAbsoluteTime = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,6 +79,13 @@ class ViewController: UIViewController, ARSessionDelegate {
            } catch(let error) {
                print(error.localizedDescription)
            }
+        
+        // Apple Watch - we need to check whether it's supported on our current phone, then activate it
+        if (WCSession.isSupported()) {
+            let session = WCSession.default
+            session.delegate = self
+            session.activate()
+        }
  
     }
     
@@ -82,6 +93,41 @@ class ViewController: UIViewController, ARSessionDelegate {
         super.viewDidAppear(animated)
         // Prevent the screen from being dimmed to avoid interrupting the AR experience.
         UIApplication.shared.isIdleTimerDisabled = true
+    }
+    
+    
+    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+
+    }
+
+    func sessionDidBecomeInactive(_ session: WCSession) {
+
+    }
+
+    func sessionDidDeactivate(_ session: WCSession) {
+
+    }
+    
+    /**
+        Send a message to apple watch
+     */
+    func sendWatchMessage() {
+        let currentTime = CFAbsoluteTimeGetCurrent()
+
+        // if less than half a second has passed, bail out
+        if lastMessage + 0.5 > currentTime {
+            return
+        }
+        
+        // send a message to the watch if it's reachable
+        if (WCSession.default.isReachable) {
+            // this is a meaningless message, but it's enough for our purposes
+            let message = ["Message": "Hello"]
+            WCSession.default.sendMessage(message, replyHandler: nil)
+        }
+
+        // update our rate limiting property
+        lastMessage = CFAbsoluteTimeGetCurrent()
     }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
@@ -195,7 +241,8 @@ class ViewController: UIViewController, ARSessionDelegate {
         if (oldDirection == "left"){
             UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         } else if (oldDirection == "right"){
-            AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+            sendWatchMessage()
+            //AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
         }
     }
     
