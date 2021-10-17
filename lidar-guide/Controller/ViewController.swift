@@ -37,10 +37,13 @@ class ViewController: UIViewController, ARSessionDelegate {
         arView.session.delegate = self
         
         // Turn on occlusion from the scene reconstruction's mesh.
-        arView.environment.sceneUnderstanding.options.insert(.occlusion)
+        //arView.environment.sceneUnderstanding.options.insert(.occlusion)
         
         // Turn on physics for the scene reconstruction's mesh.
-        arView.environment.sceneUnderstanding.options.insert(.physics)
+        //arView.environment.sceneUnderstanding.options.insert(.physics)
+        
+        // Turn on collision for the scene reconstruction's mesh.
+        arView.environment.sceneUnderstanding.options.insert([.collision,.occlusion,.physics])
         
         // Display a debug visualization of the mesh.
         arView.debugOptions.insert(.showSceneUnderstanding)
@@ -119,6 +122,7 @@ class ViewController: UIViewController, ARSessionDelegate {
         dispatchQueue.async {
             self.updateDepthData(with: frame)
           }
+        
         
         let transform = SCNMatrix4(frame.camera.transform)
         let orientation = SCNVector3(-transform.m31, -transform.m32, transform.m33)
@@ -284,11 +288,12 @@ class ViewController: UIViewController, ARSessionDelegate {
                     //    the same size on screen.
                     let raycastDistance = distance(rect, self.arView.cameraTransform.translation)
                     textEntity.scale = .one * raycastDistance
-
+                    
                     // 7. Place the text, facing the camera.
                     var resultWithCameraOrientation = self.arView.cameraTransform
                     resultWithCameraOrientation.translation = textPositionInWorldCoordinates
                     let textAnchor = AnchorEntity(world: resultWithCameraOrientation.matrix)
+                    
                     textAnchor.addChild(textEntity)
                     textAnchor.name = "TEXT NAME"
                     self.arView.scene.addAnchor(textAnchor, removeAfter: 10)
@@ -323,9 +328,49 @@ class ViewController: UIViewController, ARSessionDelegate {
         // Find for an already placed objetc
         let alreadyFoundObject = arView.scene.findEntity(named: text)
         
+        
+        
         // If object is already identified, just skips
         if (alreadyFoundObject != nil){
-            return
+            let anchors = arView.scene.anchors
+            print(anchors[0].transform)
+            
+            let test = alreadyFoundObject?.anchor
+          
+                    let query: CollisionCastQueryType = .all
+                    let mask: CollisionGroup = .all
+                    let startPosition: SIMD3<Float> = [3,-2,0]
+                    let endPosition: SIMD3<Float> = [10,7,-5]
+
+                    let camera = arView.session.currentFrame?.camera
+                    let x = (camera?.transform.columns.3.x)!
+                    let y = (camera?.transform.columns.3.y)!
+                    let z = (camera?.transform.columns.3.z)!
+
+                    let transform: SIMD3<Float> = [x, y, z]
+            
+                    print(transform)
+            
+                    let raycasts: [CollisionCastHit] = arView.scene.raycast(
+                                                                        from: startPosition,
+                                                                        to: endPosition,
+                                                                              query: query,
+                                                                               mask: mask,
+                                                                        relativeTo: nil)
+                    print(raycasts)
+                    guard let raycast: CollisionCastHit = raycasts.first
+                    else { return }
+            
+                    
+            
+                    print(raycast.distance)     // Distance from the ray origin to the hit
+                    print(raycast.entity.name)  // The entity that was hit
+                    print(raycast.position)     // The position of the hit
+            
+                    if (raycast.distance > 0){
+                        return
+                    }
+            //return
         }
         
         
@@ -339,6 +384,8 @@ class ViewController: UIViewController, ARSessionDelegate {
             
             // 3. Try to get a classification near the tap location.
             //    Classifications are available per face (in the geometric sense, not human faces).
+            
+            
             nearbyFaceWithClassification(to: result.worldTransform.position) { (centerOfFace, classification) in
                 // ...
                 DispatchQueue.main.async {
@@ -349,19 +396,23 @@ class ViewController: UIViewController, ARSessionDelegate {
                     
                     // 5. Create a 3D text to visualize the classification result.
                     let textEntity = self.model(text: text)
+                    
 
                     // 6. Scale the text depending on the distance, such that it always appears with
                     //    the same size on screen.
                     let raycastDistance = distance(result.worldTransform.position, self.arView.cameraTransform.translation)
                     textEntity.scale = .one * raycastDistance
-
+                    
                     // 7. Place the text, facing the camera.
                     var resultWithCameraOrientation = self.arView.cameraTransform
                     resultWithCameraOrientation.translation = textPositionInWorldCoordinates
+                    
+                    print("hmm")
+                    print(resultWithCameraOrientation.translation)
                     let textAnchor = AnchorEntity(world: resultWithCameraOrientation.matrix)
                     textAnchor.addChild(textEntity)
                     textAnchor.name = "TEXT NAME"
-                    self.arView.scene.addAnchor(textAnchor, removeAfter: 10)
+                    self.arView.scene.addAnchor(textAnchor, removeAfter: 5)
                     
                    
                     /*
@@ -381,7 +432,8 @@ class ViewController: UIViewController, ARSessionDelegate {
                         let faceAnchor = AnchorEntity(world: centerOfFace)
                         faceAnchor.name = text
                         faceAnchor.addChild(self.sphere(radius: 0.01, color: .blue))
-                        self.arView.scene.addAnchor(faceAnchor, removeAfter: 10)
+                        
+                        self.arView.scene.addAnchor(faceAnchor, removeAfter: 5)
                     }
                 }
             }

@@ -13,9 +13,11 @@ extension Scene {
 /// - Tag: AddAnchorExtension
     func addAnchor(_ anchor: HasAnchoring, removeAfter seconds: TimeInterval) {
         
-        guard let model = anchor.children.first as? HasPhysics else {
+        guard let model = anchor.children.first as? (Entity & HasPhysics) else {
             return
         }
+        
+        
         
         // Set up model to participate in physics simulation
         if model.collision == nil {
