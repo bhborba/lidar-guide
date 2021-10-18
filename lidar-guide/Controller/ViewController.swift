@@ -164,21 +164,7 @@ class ViewController: UIViewController, ARSessionDelegate {
             }
         }
         
-        /** Acesso ao depth data*/
-        //guard let depthData = frame.sceneDepth else { return }
-        //guard let smoothedSceneDepth = frame.smoothedSceneDepth else { return }
-      
-        /*let arData = ARData(depthImage: depthData.depthMap,
-                                    confidenceImage: depthData.confidenceMap,
-                          depthSmoothImage: smoothedSceneDepth.depthMap,
-                          confidenceSmoothImage: smoothedSceneDepth.confidenceMap,
-                          colorImage: frame.capturedImage,
-                          cameraIntrinsics: frame.camera.intrinsics,
-                          cameraResolution: frame.camera.imageResolution,
-                          deviceOrientation: UIDevice.current.orientation,
-                          screenResolution: UIScreen.main.bounds.size)*/
-        //myFeedView.updateFeed(pixelBuffer: arData.depthImage)
-        // execute change map setting*/
+
     }
     
     /**
@@ -222,7 +208,7 @@ class ViewController: UIViewController, ARSessionDelegate {
         let meshAnchors = frame.anchors.compactMap { $0 as? ARMeshAnchor }
         
         // Perform the search asynchronously in order not to stall rendering.
-        DispatchQueue.global().async {
+        /*DispatchQueue.global().async {
             for anchor in meshAnchors {
                 // Get the semantic classification of the face and finish the search.
                 //let classification: ARMeshClassification = anchor.geometry.classificationOf(faceWithIndex: index)
@@ -245,7 +231,7 @@ class ViewController: UIViewController, ARSessionDelegate {
                 }
             }
             
-        }
+        }*/
         
         objectDetectionService.detect(on: .init(pixelBuffer: pixelBuffer)) { [weak self] result in
             guard let self = self else { return }
@@ -325,55 +311,6 @@ class ViewController: UIViewController, ARSessionDelegate {
     func addAnnotation(rectOfInterest rect: CGRect, text: String) {
         let point = CGPoint(x: rect.midX, y: rect.midY)
         
-        // Find for an already placed objetc
-        let alreadyFoundObject = arView.scene.findEntity(named: text)
-        
-        
-        
-        // If object is already identified, just skips
-        if (alreadyFoundObject != nil){
-            let anchors = arView.scene.anchors
-            print(anchors[0].transform)
-            
-            let test = alreadyFoundObject?.anchor
-          
-                    let query: CollisionCastQueryType = .all
-                    let mask: CollisionGroup = .all
-                    let startPosition: SIMD3<Float> = [3,-2,0]
-                    let endPosition: SIMD3<Float> = [10,7,-5]
-
-                    let camera = arView.session.currentFrame?.camera
-                    let x = (camera?.transform.columns.3.x)!
-                    let y = (camera?.transform.columns.3.y)!
-                    let z = (camera?.transform.columns.3.z)!
-
-                    let transform: SIMD3<Float> = [x, y, z]
-            
-                    print(transform)
-            
-                    let raycasts: [CollisionCastHit] = arView.scene.raycast(
-                                                                        from: startPosition,
-                                                                        to: endPosition,
-                                                                              query: query,
-                                                                               mask: mask,
-                                                                        relativeTo: nil)
-                    print(raycasts)
-                    guard let raycast: CollisionCastHit = raycasts.first
-                    else { return }
-            
-                    
-            
-                    print(raycast.distance)     // Distance from the ray origin to the hit
-                    print(raycast.entity.name)  // The entity that was hit
-                    print(raycast.position)     // The position of the hit
-            
-                    if (raycast.distance > 0){
-                        return
-                    }
-            //return
-        }
-        
-        
         if let result = arView.raycast(from: point, allowing: .estimatedPlane, alignment: .any).first {
             // ...
             // 2. Visualize the intersection point of the ray with the real-world surface.
@@ -385,6 +322,49 @@ class ViewController: UIViewController, ARSessionDelegate {
             // 3. Try to get a classification near the tap location.
             //    Classifications are available per face (in the geometric sense, not human faces).
             
+            
+            // Find for an already placed objetc
+            let alreadyFoundObject = arView.scene.findEntity(named: text)
+            
+            // If object is already identified, just skips
+            if (alreadyFoundObject != nil){
+              
+                        let query: CollisionCastQueryType = .all
+                        let mask: CollisionGroup = .all
+
+                        let camera = arView.session.currentFrame?.camera
+                        let x = (camera?.transform.columns.3.x)!
+                        let y = (camera?.transform.columns.3.y)!
+                        let z = (camera?.transform.columns.3.z)!
+
+                        let transform: SIMD3<Float> = [x, y, z]
+                
+                        print("transform")
+                        print(transform)
+                        print("result.worldTransform.position")
+                        print(result.worldTransform.position)
+                
+                        let raycasts: [CollisionCastHit] = arView.scene.raycast(
+                                                                            from: transform,
+                                                                            to: result.worldTransform.position,
+                                                                                  query: query,
+                                                                                   mask: mask,
+                                                                            relativeTo: nil)
+                        print(raycasts)
+                        guard let raycast: CollisionCastHit = raycasts.first
+                        else { return }
+                
+                        
+                
+                        print(raycast.distance)     // Distance from the ray origin to the hit
+                        print(raycast.entity.name)  // The entity that was hit
+                        print(raycast.position)     // The position of the hit
+                
+                        if (raycast.distance > 0){
+                            return
+                        }
+                //return
+            }
             
             nearbyFaceWithClassification(to: result.worldTransform.position) { (centerOfFace, classification) in
                 // ...
