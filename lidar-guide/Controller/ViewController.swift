@@ -336,9 +336,10 @@ class ViewController: UIViewController, ARSessionDelegate {
         let middleX = arView.bounds.width/2
         
         if(pointX > middleX){
-            utterance = AVSpeechUtterance(string: text + "to the left")
-        } else {
             utterance = AVSpeechUtterance(string: text + "to the right")
+            
+        } else {
+            utterance = AVSpeechUtterance(string: text + "to the left")
         }
         
         
