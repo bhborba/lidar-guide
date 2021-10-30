@@ -321,22 +321,31 @@ class ViewController: UIViewController, ARSessionDelegate {
     func addAnnotation(rectOfInterest rect: CGRect, text: String) {
         let point = CGPoint(x: rect.midX, y: rect.midY)
         
+        /*
+         Text to speech
+         */
+        var utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        //utterance.rate = 0.1
+        let synthesizer = AVSpeechSynthesizer()
+        
         // Find for an already placed objetc
         let alreadyFoundObject = arView.scene.findEntity(named: text)
         
+        let pointX = CGFloat(point.x)
+        let middleX = arView.bounds.width/2
+        
+        if(pointX > middleX){
+            utterance = AVSpeechUtterance(string: text + "to the left")
+        } else {
+            utterance = AVSpeechUtterance(string: text + "to the right")
+        }
+        
+        
+        
         // If object is already identified, just skips
         if (alreadyFoundObject != nil){
-      
-            let pointX = CGFloat(point.x)
-            let middleX = arView.bounds.width/2
-           
-            if(pointX > middleX){
-                print("object to right")
-            } else {
-                print("object to left")
-            }
-    
-            
+            synthesizer.speak(utterance)
             return
         }
         
@@ -376,18 +385,8 @@ class ViewController: UIViewController, ARSessionDelegate {
                     textAnchor.name = "TEXT NAME"
                     self.arView.scene.addAnchor(textAnchor, removeAfter: 900)
                     
-                   
-                    /*
-                     Text to speech
-                     */
-                    let utterance = AVSpeechUtterance(string: text)
-                    utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-                    //utterance.rate = 0.1
-
-                    let synthesizer = AVSpeechSynthesizer()
                     synthesizer.speak(utterance)
                    
-
                     // 8. Visualize the center of the face (if any was found) for three seconds.
                     //    It is possible that this is nil, e.g. if there was no face close enough to the tap location.
                     if let centerOfFace = centerOfFace {
