@@ -57,6 +57,7 @@ class ViewController: UIViewController, ARSessionDelegate {
         
         configuration.environmentTexturing = .automatic
         
+        
         // Add plane detection
         configuration.planeDetection = [.horizontal, .vertical]
         
@@ -218,7 +219,7 @@ class ViewController: UIViewController, ARSessionDelegate {
         let meshAnchors = frame.anchors.compactMap { $0 as? ARMeshAnchor }
         
         // Perform the search asynchronously in order not to stall rendering.
-        DispatchQueue.global().async {
+        /*DispatchQueue.global().async {
             for anchor in meshAnchors {
                 // Get the semantic classification of the face and finish the search.
                 //let classification: ARMeshClassification = anchor.geometry.classificationOf(faceWithIndex: index)
@@ -241,7 +242,7 @@ class ViewController: UIViewController, ARSessionDelegate {
                 }
             }
             
-        }
+        }*/
         
         objectDetectionService.detect(on: .init(pixelBuffer: pixelBuffer)) { [weak self] result in
             guard let self = self else { return }
@@ -325,11 +326,23 @@ class ViewController: UIViewController, ARSessionDelegate {
         
         // If object is already identified, just skips
         if (alreadyFoundObject != nil){
+      
+            let pointX = CGFloat(point.x)
+            let middleX = arView.bounds.width/2
+           
+            if(pointX > middleX){
+                print("object to right")
+            } else {
+                print("object to left")
+            }
+    
+            
             return
         }
         
         
         if let result = arView.raycast(from: point, allowing: .estimatedPlane, alignment: .any).first {
+            
             // ...
             // 2. Visualize the intersection point of the ray with the real-world surface.
             //let resultAnchor = AnchorEntity(world: result.worldTransform)
@@ -361,7 +374,7 @@ class ViewController: UIViewController, ARSessionDelegate {
                     let textAnchor = AnchorEntity(world: resultWithCameraOrientation.matrix)
                     textAnchor.addChild(textEntity)
                     textAnchor.name = "TEXT NAME"
-                    self.arView.scene.addAnchor(textAnchor, removeAfter: 10)
+                    self.arView.scene.addAnchor(textAnchor, removeAfter: 900)
                     
                    
                     /*
@@ -381,7 +394,7 @@ class ViewController: UIViewController, ARSessionDelegate {
                         let faceAnchor = AnchorEntity(world: centerOfFace)
                         faceAnchor.name = text
                         faceAnchor.addChild(self.sphere(radius: 0.01, color: .blue))
-                        self.arView.scene.addAnchor(faceAnchor, removeAfter: 10)
+                        self.arView.scene.addAnchor(faceAnchor, removeAfter: 900)
                     }
                 }
             }
