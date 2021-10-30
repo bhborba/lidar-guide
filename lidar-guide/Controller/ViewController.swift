@@ -10,7 +10,8 @@ import ARKit
 import AVFoundation
 
 class ViewController: UIViewController, ARSessionDelegate {
-    @IBOutlet weak var arView: ARView!
+    @IBOutlet weak var arView: ARSCNView!
+    
     
     var newDepthData:Depth?
     
@@ -43,17 +44,17 @@ class ViewController: UIViewController, ARSessionDelegate {
         //arView.environment.sceneUnderstanding.options.insert(.physics)
         
         // Turn on collision for the scene reconstruction's mesh.
-        arView.environment.sceneUnderstanding.options.insert([.collision,.occlusion,.physics])
+        //arView.environment.sceneUnderstanding.options.insert([.collision,.occlusion,.physics])
         
         // Display a debug visualization of the mesh.
-        arView.debugOptions.insert(.showSceneUnderstanding)
+        //arView.debugOptions.insert(.showSceneUnderstanding)
         
         // For performance, disable render options that are not required for this app.
-        arView.renderOptions = [.disablePersonOcclusion, .disableDepthOfField, .disableMotionBlur]
+        //arView.renderOptions = [.disablePersonOcclusion, .disableDepthOfField, .disableMotionBlur]
         
         // Manually configure what kind of AR session to run since
         // ARView on its own does not turn on mesh classification.
-        arView.automaticallyConfigureSession = false
+        //arView.automaticallyConfigureSession = false
         let configuration = ARWorldTrackingConfiguration()
         
         configuration.sceneReconstruction = .meshWithClassification
@@ -204,35 +205,6 @@ class ViewController: UIViewController, ARSessionDelegate {
     func performDetection() {
         guard let pixelBuffer = arView.session.currentFrame?.capturedImage else { return }
         
-        guard let frame = arView.session.currentFrame else { return }
-        let meshAnchors = frame.anchors.compactMap { $0 as? ARMeshAnchor }
-        
-        // Perform the search asynchronously in order not to stall rendering.
-        /*DispatchQueue.global().async {
-            for anchor in meshAnchors {
-                // Get the semantic classification of the face and finish the search.
-                //let classification: ARMeshClassification = anchor.geometry.classificationOf(faceWithIndex: index)
-                for index in 0..<anchor.geometry.faces.count {
-                    // Get the center of the face so that we can compare it to the given location.
-                    let geometricCenterOfFace = anchor.geometry.centerOf(faceWithIndex: index)
-                    
-                    // Convert the face's center to world coordinates.
-                    var centerLocalTransform = matrix_identity_float4x4
-                    centerLocalTransform.columns.3 = SIMD4<Float>(geometricCenterOfFace.0, geometricCenterOfFace.1, geometricCenterOfFace.2, 1)
-                    let centerWorldPosition = (anchor.transform * centerLocalTransform).position
-                    
-                        // Get the semantic classification of the face and finish the search.
-                        let classification: ARMeshClassification = anchor.geometry.classificationOf(faceWithIndex: index)
-                        if (classification.description == "Door"){
-                            self.addNotationMesh(rectOfInterest: centerWorldPosition,
-                                               text: classification.description)
-                            return
-                        }
-                }
-            }
-            
-        }*/
-        
         objectDetectionService.detect(on: .init(pixelBuffer: pixelBuffer)) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -250,176 +222,50 @@ class ViewController: UIViewController, ARSessionDelegate {
         }
     }
     
-    func addNotationMesh(rectOfInterest rect: SIMD3<Float>, text: String){
-        // Find for an already placed objetc
-        let alreadyFoundObject = arView.scene.findEntity(named: text)
-        
-        // If object is already identified, just skips
-        if (alreadyFoundObject != nil){
-            return
-        }
     
-            nearbyFaceWithClassification(to: rect) { (centerOfFace, classification) in
-                // ...
-                DispatchQueue.main.async {
-                    // 4. Compute a position for the text which is near the result location, but offset 10 cm
-                    // towards the camera (along the ray) to minimize unintentional occlusions of the text by the mesh.
-                    let rayDirection = normalize(rect - self.arView.cameraTransform.translation)
-                    let textPositionInWorldCoordinates = rect - (rayDirection * 0.1)
-                    
-                    // 5. Create a 3D text to visualize the classification result.
-                    let textEntity = self.model(text: text)
-
-                    // 6. Scale the text depending on the distance, such that it always appears with
-                    //    the same size on screen.
-                    let raycastDistance = distance(rect, self.arView.cameraTransform.translation)
-                    textEntity.scale = .one * raycastDistance
-                    
-                    // 7. Place the text, facing the camera.
-                    var resultWithCameraOrientation = self.arView.cameraTransform
-                    resultWithCameraOrientation.translation = textPositionInWorldCoordinates
-                    let textAnchor = AnchorEntity(world: resultWithCameraOrientation.matrix)
-                    
-                    textAnchor.addChild(textEntity)
-                    textAnchor.name = "TEXT NAME"
-                    self.arView.scene.addAnchor(textAnchor, removeAfter: 10)
-                    
-                   
-                    /*
-                     Text to speech
-                     */
-                    let utterance = AVSpeechUtterance(string: text)
-                    utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-                    //utterance.rate = 0.1
-
-                    let synthesizer = AVSpeechSynthesizer()
-                    synthesizer.speak(utterance)
-                   
-
-                    // 8. Visualize the center of the face (if any was found) for three seconds.
-                    //    It is possible that this is nil, e.g. if there was no face close enough to the tap location.
-                    if let centerOfFace = centerOfFace {
-                        let faceAnchor = AnchorEntity(world: centerOfFace)
-                        faceAnchor.name = text
-                        faceAnchor.addChild(self.sphere(radius: 0.01, color: .blue))
-                        self.arView.scene.addAnchor(faceAnchor, removeAfter: 10)
-                    }
-                }
+        func addAnnotation(rectOfInterest rect: CGRect, text: String) {
+            //1
+            let point = CGPoint(x: rect.midX, y: rect.midY)
+            let scnHitTestResults = arView.hitTest(point,
+                                                      options: [SCNHitTestOption.searchMode: SCNHitTestSearchMode.all.rawValue])
+            guard !scnHitTestResults.contains(where: { $0.node.name == BubbleNode.name }) else {
+            
+                let objectNode = scnHitTestResults.first(where: { $0.node.name == BubbleNode.name })!.node
+                
+                let leftArea = CGRect(x: 0, y: 0, width: arView.bounds.width/2, height: arView.bounds.height)
+               
+                /*if leftArea.contains(objectNode) {
+                        print("Left tapped")
+                        //Your actions when you click on the left side of the screen
+                    } else {
+                        print("Right tapped")
+                        //Your actions when you click on the right side of the screen
+                    }*/
+                
+                return
             }
-    }
-    
-    func addAnnotation(rectOfInterest rect: CGRect, text: String) {
-        let point = CGPoint(x: rect.midX, y: rect.midY)
-        
-        if let result = arView.raycast(from: point, allowing: .estimatedPlane, alignment: .any).first {
-            // ...
-            // 2. Visualize the intersection point of the ray with the real-world surface.
-            //let resultAnchor = AnchorEntity(world: result.worldTransform)
-            
-            //resultAnchor.addChild(sphere(radius: 0.01, color: .lightGray))
-            //arView.scene.addAnchor(resultAnchor, removeAfter: 3)
-            
-            // 3. Try to get a classification near the tap location.
-            //    Classifications are available per face (in the geometric sense, not human faces).
-            
-            
-            // Find for an already placed objetc
-            let alreadyFoundObject = arView.scene.findEntity(named: text)
-            
-            // If object is already identified, just skips
-            if (alreadyFoundObject != nil){
-              
-                        let query: CollisionCastQueryType = .all
-                        let mask: CollisionGroup = .all
+            //2
+            guard let raycastQuery = arView.raycastQuery(from: point,
+                                                            allowing: .existingPlaneInfinite,
+                                                            alignment: .horizontal),
+                  let raycastResult = arView.session.raycast(raycastQuery).first else { return }
+            let position = SCNVector3(raycastResult.worldTransform.columns.3.x,
+                                      raycastResult.worldTransform.columns.3.y,
+                                      raycastResult.worldTransform.columns.3.z)
+            //3
+            guard let cameraPosition = arView.pointOfView?.position else { return }
+            print(position - cameraPosition)
+            let distance = (position - cameraPosition).length()
+            guard distance <= 0.5 else { return }
 
-                        let camera = arView.session.currentFrame?.camera
-                        let x = (camera?.transform.columns.3.x)!
-                        let y = (camera?.transform.columns.3.y)!
-                        let z = (camera?.transform.columns.3.z)!
-
-                        let transform: SIMD3<Float> = [x, y, z]
-                
-                        print("transform")
-                        print(transform)
-                        print("result.worldTransform.position")
-                        print(result.worldTransform.position)
-                
-                        let raycasts: [CollisionCastHit] = arView.scene.raycast(
-                                                                            from: transform,
-                                                                            to: result.worldTransform.position,
-                                                                                  query: query,
-                                                                                   mask: mask,
-                                                                            relativeTo: nil)
-                        print(raycasts)
-                        guard let raycast: CollisionCastHit = raycasts.first
-                        else { return }
-                
-                        
-                
-                        print(raycast.distance)     // Distance from the ray origin to the hit
-                        print(raycast.entity.name)  // The entity that was hit
-                        print(raycast.position)     // The position of the hit
-                
-                        if (raycast.distance > 0){
-                            return
-                        }
-                //return
+            //4
+            let bubbleNode = BubbleNode(text: text)
+            bubbleNode.worldPosition = position
+            arView.prepare([bubbleNode]) { [weak self] _ in
+                self?.arView.scene.rootNode.addChildNode(bubbleNode)
             }
-            
-            nearbyFaceWithClassification(to: result.worldTransform.position) { (centerOfFace, classification) in
-                // ...
-                DispatchQueue.main.async {
-                    // 4. Compute a position for the text which is near the result location, but offset 10 cm
-                    // towards the camera (along the ray) to minimize unintentional occlusions of the text by the mesh.
-                    let rayDirection = normalize(result.worldTransform.position - self.arView.cameraTransform.translation)
-                    let textPositionInWorldCoordinates = result.worldTransform.position - (rayDirection * 0.1)
-                    
-                    // 5. Create a 3D text to visualize the classification result.
-                    let textEntity = self.model(text: text)
-                    
-
-                    // 6. Scale the text depending on the distance, such that it always appears with
-                    //    the same size on screen.
-                    let raycastDistance = distance(result.worldTransform.position, self.arView.cameraTransform.translation)
-                    textEntity.scale = .one * raycastDistance
-                    
-                    // 7. Place the text, facing the camera.
-                    var resultWithCameraOrientation = self.arView.cameraTransform
-                    resultWithCameraOrientation.translation = textPositionInWorldCoordinates
-                    
-                    print("hmm")
-                    print(resultWithCameraOrientation.translation)
-                    let textAnchor = AnchorEntity(world: resultWithCameraOrientation.matrix)
-                    textAnchor.addChild(textEntity)
-                    textAnchor.name = "TEXT NAME"
-                    self.arView.scene.addAnchor(textAnchor, removeAfter: 5)
-                    
-                   
-                    /*
-                     Text to speech
-                     */
-                    let utterance = AVSpeechUtterance(string: text)
-                    utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-                    //utterance.rate = 0.1
-
-                    let synthesizer = AVSpeechSynthesizer()
-                    synthesizer.speak(utterance)
-                   
-
-                    // 8. Visualize the center of the face (if any was found) for three seconds.
-                    //    It is possible that this is nil, e.g. if there was no face close enough to the tap location.
-                    if let centerOfFace = centerOfFace {
-                        let faceAnchor = AnchorEntity(world: centerOfFace)
-                        faceAnchor.name = text
-                        faceAnchor.addChild(self.sphere(radius: 0.01, color: .blue))
-                        
-                        self.arView.scene.addAnchor(faceAnchor, removeAfter: 5)
-                    }
-                }
-            }
-        
         }
-    }
+
     
     func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
         guard let frame = session.currentFrame else { return }
