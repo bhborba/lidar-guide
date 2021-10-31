@@ -270,7 +270,7 @@ class ViewController: UIViewController, ARSessionDelegate {
             return
         }
     
-            nearbyFaceWithClassification(to: rect) { (centerOfFace, classification) in
+            nearbyFaceWithClassification(to: rect) { (centerOfFace, classification,anchorDistance) in
                 // ...
                 DispatchQueue.main.async {
                     // 4. Compute a position for the text which is near the result location, but offset 10 cm
@@ -331,10 +331,12 @@ class ViewController: UIViewController, ARSessionDelegate {
         
         // Find for an already placed objetc
         let alreadyFoundObject = arView.scene.findEntity(named: text)
-        
+    
         let pointX = CGFloat(point.x)
+        // The middle of the screen
         let middleX = arView.bounds.width/2
         
+        // Get object position (left/right)
         if(pointX > middleX){
             utterance = AVSpeechUtterance(string: text + "to the right")
             
@@ -342,14 +344,11 @@ class ViewController: UIViewController, ARSessionDelegate {
             utterance = AVSpeechUtterance(string: text + "to the left")
         }
         
-        
-        
         // If object is already identified, just skips
         if (alreadyFoundObject != nil){
             synthesizer.speak(utterance)
             return
         }
-        
         
         if let result = arView.raycast(from: point, allowing: .estimatedPlane, alignment: .any).first {
             
@@ -362,8 +361,9 @@ class ViewController: UIViewController, ARSessionDelegate {
             
             // 3. Try to get a classification near the tap location.
             //    Classifications are available per face (in the geometric sense, not human faces).
-            nearbyFaceWithClassification(to: result.worldTransform.position) { (centerOfFace, classification) in
+            nearbyFaceWithClassification(to: result.worldTransform.position) { (centerOfFace, classification, anchorDistance) in
                 // ...
+                print(anchorDistance)
                 DispatchQueue.main.async {
                     // 4. Compute a position for the text which is near the result location, but offset 10 cm
                     // towards the camera (along the ray) to minimize unintentional occlusions of the text by the mesh.
@@ -384,7 +384,7 @@ class ViewController: UIViewController, ARSessionDelegate {
                     let textAnchor = AnchorEntity(world: resultWithCameraOrientation.matrix)
                     textAnchor.addChild(textEntity)
                     textAnchor.name = "TEXT NAME"
-                    self.arView.scene.addAnchor(textAnchor, removeAfter: 900)
+                    self.arView.scene.addAnchor(textAnchor, removeAfter: 10)
                     
                     synthesizer.speak(utterance)
                    
@@ -394,7 +394,7 @@ class ViewController: UIViewController, ARSessionDelegate {
                         let faceAnchor = AnchorEntity(world: centerOfFace)
                         faceAnchor.name = text
                         faceAnchor.addChild(self.sphere(radius: 0.01, color: .blue))
-                        self.arView.scene.addAnchor(faceAnchor, removeAfter: 900)
+                        self.arView.scene.addAnchor(faceAnchor, removeAfter: 10)
                     }
                 }
             }
@@ -456,9 +456,9 @@ class ViewController: UIViewController, ARSessionDelegate {
         return sphere
     }
     
-    func nearbyFaceWithClassification(to location: SIMD3<Float>, completionBlock: @escaping (SIMD3<Float>?, ARMeshClassification) -> Void) {
+    func nearbyFaceWithClassification(to location: SIMD3<Float>, completionBlock: @escaping (SIMD3<Float>?, ARMeshClassification,Float) -> Void) {
         guard let frame = arView.session.currentFrame else {
-            completionBlock(nil, .none)
+            completionBlock(nil, .none,0)
             return
         }
     
@@ -487,14 +487,15 @@ class ViewController: UIViewController, ARSessionDelegate {
                     if distanceToFace <= 0.05 {
                         // Get the semantic classification of the face and finish the search.
                         let classification: ARMeshClassification = anchor.geometry.classificationOf(faceWithIndex: index)
-                        completionBlock(centerWorldPosition, classification)
+                        let anchorDistance = distance(anchor.transform.position, self.arView.session.currentFrame!.camera.transform.position)
+                        completionBlock(centerWorldPosition, classification,anchorDistance)
                         return
                     }
                 }
             }
             
             // Let the completion block know that no result was found.
-            completionBlock(nil, .none)
+            completionBlock(nil, .none,0)
         }
     }
     
