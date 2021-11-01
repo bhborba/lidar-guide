@@ -215,35 +215,6 @@ class ViewController: UIViewController, ARSessionDelegate {
     func performDetection() {
         guard let pixelBuffer = arView.session.currentFrame?.capturedImage else { return }
         
-        guard let frame = arView.session.currentFrame else { return }
-        let meshAnchors = frame.anchors.compactMap { $0 as? ARMeshAnchor }
-        
-        // Perform the search asynchronously in order not to stall rendering.
-        /*DispatchQueue.global().async {
-            for anchor in meshAnchors {
-                // Get the semantic classification of the face and finish the search.
-                //let classification: ARMeshClassification = anchor.geometry.classificationOf(faceWithIndex: index)
-                for index in 0..<anchor.geometry.faces.count {
-                    // Get the center of the face so that we can compare it to the given location.
-                    let geometricCenterOfFace = anchor.geometry.centerOf(faceWithIndex: index)
-                    
-                    // Convert the face's center to world coordinates.
-                    var centerLocalTransform = matrix_identity_float4x4
-                    centerLocalTransform.columns.3 = SIMD4<Float>(geometricCenterOfFace.0, geometricCenterOfFace.1, geometricCenterOfFace.2, 1)
-                    let centerWorldPosition = (anchor.transform * centerLocalTransform).position
-                    
-                        // Get the semantic classification of the face and finish the search.
-                        let classification: ARMeshClassification = anchor.geometry.classificationOf(faceWithIndex: index)
-                        if (classification.description == "Door"){
-                            self.addNotationMesh(rectOfInterest: centerWorldPosition,
-                                               text: classification.description)
-                            return
-                        }
-                }
-            }
-            
-        }*/
-        
         objectDetectionService.detect(on: .init(pixelBuffer: pixelBuffer)) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -256,6 +227,7 @@ class ViewController: UIViewController, ARSessionDelegate {
                                    text: response.classification)
             
             case .failure(let error):
+                print(error)
                 break
             }
         }
@@ -303,7 +275,7 @@ class ViewController: UIViewController, ARSessionDelegate {
                     //utterance.rate = 0.1
 
                     let synthesizer = AVSpeechSynthesizer()
-                    synthesizer.speak(utterance)
+                    //synthesizer.speak(utterance)
                    
 
                     // 8. Visualize the center of the face (if any was found) for three seconds.

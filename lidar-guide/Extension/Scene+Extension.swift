@@ -29,6 +29,19 @@ extension Scene {
                                              mode: .kinematic)
      
         model.name = "Object"
+        do {  let audioResource = try AudioFileResource.load(named: "fireplace.mp3",
+                                                          in: nil,
+                                                   inputMode: .spatial,
+                                             loadingStrategy: .preload,
+                                                        shouldLoop: false)
+            model.playAudio(audioResource)
+            
+        } catch(let error) {
+            print(error)
+        }
+
+       
+        
         addAnchor(anchor)
         // Making the physics body dynamic at this time will let the model be affected by forces.
         Timer.scheduledTimer(withTimeInterval: seconds, repeats: false) { (timer) in

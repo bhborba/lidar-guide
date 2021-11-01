@@ -30,6 +30,7 @@
 		F1850B352702923500E98DBE /* Scene+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1850B342702923500E98DBE /* Scene+Extension.swift */; };
 		F1850B372702936300E98DBE /* ARMeshGeometry+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1850B362702936300E98DBE /* ARMeshGeometry+Extension.swift */; };
 		F1850B39270293DD00E98DBE /* simd_float4x4+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1850B38270293DD00E98DBE /* simd_float4x4+Extension.swift */; };
+		F191F54E2730613F0040E43D /* fireplace.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F191F54D2730613F0040E43D /* fireplace.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +59,7 @@
 		F1850B342702923500E98DBE /* Scene+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Scene+Extension.swift"; sourceTree = "<group>"; };
 		F1850B362702936300E98DBE /* ARMeshGeometry+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARMeshGeometry+Extension.swift"; sourceTree = "<group>"; };
 		F1850B38270293DD00E98DBE /* simd_float4x4+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "simd_float4x4+Extension.swift"; sourceTree = "<group>"; };
+		F191F54D2730613F0040E43D /* fireplace.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = fireplace.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +156,7 @@
 				F1850B362702936300E98DBE /* ARMeshGeometry+Extension.swift */,
 				F1850B38270293DD00E98DBE /* simd_float4x4+Extension.swift */,
 				F135D50B27121385006D70BA /* ARMeshClassification+Extension.swift */,
+				F191F54D2730613F0040E43D /* fireplace.mp3 */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -217,6 +220,7 @@
 			files = (
 				F1198C8B26E13D7D0096A7BB /* LaunchScreen.storyboard in Resources */,
 				F1198C8826E13D7D0096A7BB /* Assets.xcassets in Resources */,
+				F191F54E2730613F0040E43D /* fireplace.mp3 in Resources */,
 				F1198C8626E13D7C0096A7BB /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
