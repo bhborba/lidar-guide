@@ -336,19 +336,6 @@ class ViewController: UIViewController, ARSessionDelegate {
         // The middle of the screen
         let middleX = arView.bounds.width/2
         
-        // Get object position (left/right)
-        if(pointX > middleX){
-            utterance = AVSpeechUtterance(string: text + "to the right")
-            
-        } else {
-            utterance = AVSpeechUtterance(string: text + "to the left")
-        }
-        
-        // If object is already identified, just skips
-        if (alreadyFoundObject != nil){
-            synthesizer.speak(utterance)
-            return
-        }
         
         if let result = arView.raycast(from: point, allowing: .estimatedPlane, alignment: .any).first {
             
@@ -362,8 +349,23 @@ class ViewController: UIViewController, ARSessionDelegate {
             // 3. Try to get a classification near the tap location.
             //    Classifications are available per face (in the geometric sense, not human faces).
             nearbyFaceWithClassification(to: result.worldTransform.position) { (centerOfFace, classification, anchorDistance) in
-                // ...
-                print(anchorDistance)
+                
+                let anchorDistanceString = String(format: "%.2f", anchorDistance)
+                
+                // Get object position (left/right)
+                if(pointX > middleX){
+                    utterance = AVSpeechUtterance(string: text + "to the right")
+                    
+                } else {
+                    utterance = AVSpeechUtterance(string: text + "to the left")
+                }
+                
+                // If object is already identified, just skips
+                if (alreadyFoundObject != nil){
+                    synthesizer.speak(utterance)
+                    return
+                }
+                
                 DispatchQueue.main.async {
                     // 4. Compute a position for the text which is near the result location, but offset 10 cm
                     // towards the camera (along the ray) to minimize unintentional occlusions of the text by the mesh.
