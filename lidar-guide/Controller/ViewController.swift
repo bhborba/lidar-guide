@@ -11,6 +11,9 @@ import AVFoundation
 
 class ViewController: UIViewController, ARSessionDelegate {
     @IBOutlet weak var arView: ARView!
+    @IBOutlet weak var directionTooClose: UILabel!
+    @IBOutlet weak var objectDirection: UILabel!
+    @IBOutlet weak var objectDistance: UILabel!
     
     var newDepthData:Depth?
     
@@ -176,7 +179,8 @@ class ViewController: UIViewController, ARSessionDelegate {
             Vibra o celular
      */
     @objc func vibrate() {
-        print(oldDirection)
+        //print(oldDirection)
+        directionTooClose.text = "too close to the " + oldDirection
         if (oldDirection == "left"){
             UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         } else if (oldDirection == "right"){
@@ -298,14 +302,25 @@ class ViewController: UIViewController, ARSessionDelegate {
             //    Classifications are available per face (in the geometric sense, not human faces).
             nearbyFaceWithClassification(to: result.worldTransform.position) { (centerOfFace, classification, anchorDistance) in
                 // TODO: Get the distance value
+                
+                
+                
                 //let anchorDistanceString = String(format: "%.2f", anchorDistance)
+                var objectDirectionString = ""
                 
                 // Get object position (left/right)
                 if(pointX > middleX){
-                    utterance = AVSpeechUtterance(string: text + "to the right")
+                    utterance = AVSpeechUtterance(string: text + " to the right")
+                    objectDirectionString = text + " to the right"
                     
                 } else {
-                    utterance = AVSpeechUtterance(string: text + "to the left")
+                    objectDirectionString = text + " to the left"
+                    utterance = AVSpeechUtterance(string: text + " to the left")
+                }
+                
+                DispatchQueue.main.async {
+                    self.objectDistance.text = text + " distance: " + String(format: "%.2f", anchorDistance)
+                    self.objectDirection.text = objectDirectionString
                 }
                 
                 // If object is already identified, just skips
