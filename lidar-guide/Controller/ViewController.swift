@@ -369,6 +369,34 @@ class ViewController: UIViewController, ARSessionDelegate {
     
     private func onSessionUpdate(for frame: ARFrame, trackingState: ARCamera.TrackingState) {
         isLoopShouldContinue = false
+        
+        // Update the UI to provide feedback on the state of the AR experience.
+                let message: String
+
+                switch trackingState {
+                case .normal where frame.anchors.isEmpty:
+                    // No planes detected; provide instructions for this app's AR interactions.
+                    message = "Move the device around to detect horizontal and vertical surfaces."
+
+                case .notAvailable:
+                    message = "Tracking unavailable."
+
+                case .limited(.excessiveMotion):
+                    message = "Tracking limited - Move the device more slowly."
+
+                case .limited(.insufficientFeatures):
+                    message = "Tracking limited - Point the device at an area with visible surface detail, or improve lighting conditions."
+
+                case .limited(.initializing):
+                    message = "Initializing AR session."
+
+                default:
+                    // No feedback needed when tracking is normal and planes are visible.
+                    // (Nor when in unreachable limited-tracking states.)
+                    message = ""
+                    isLoopShouldContinue = true
+                    loopObjectDetection()
+                }
     }
     
     func sphere(radius: Float, color: UIColor) -> ModelEntity {
