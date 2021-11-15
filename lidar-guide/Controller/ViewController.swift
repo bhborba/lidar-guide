@@ -221,63 +221,6 @@ class ViewController: UIViewController, ARSessionDelegate {
         }
     }
     
-    func addNotationMesh(rectOfInterest rect: SIMD3<Float>, text: String){
-        // Find for an already placed objetc
-        let alreadyFoundObject = arView.scene.findEntity(named: text)
-        
-        // If object is already identified, just skips
-        if (alreadyFoundObject != nil){
-            return
-        }
-    
-            nearbyFaceWithClassification(to: rect) { (centerOfFace, classification,anchorDistance) in
-                // ...
-                DispatchQueue.main.async {
-                    // 4. Compute a position for the text which is near the result location, but offset 10 cm
-                    // towards the camera (along the ray) to minimize unintentional occlusions of the text by the mesh.
-                    let rayDirection = normalize(rect - self.arView.cameraTransform.translation)
-                    let textPositionInWorldCoordinates = rect - (rayDirection * 0.1)
-                    
-                    // 5. Create a 3D text to visualize the classification result.
-                    let textEntity = self.model(text: text)
-
-                    // 6. Scale the text depending on the distance, such that it always appears with
-                    //    the same size on screen.
-                    let raycastDistance = distance(rect, self.arView.cameraTransform.translation)
-                    textEntity.scale = .one * raycastDistance
-
-                    // 7. Place the text, facing the camera.
-                    var resultWithCameraOrientation = self.arView.cameraTransform
-                    resultWithCameraOrientation.translation = textPositionInWorldCoordinates
-                    let textAnchor = AnchorEntity(world: resultWithCameraOrientation.matrix)
-                    textAnchor.addChild(textEntity)
-                    textAnchor.name = "TEXT NAME"
-                    self.arView.scene.addAnchor(textAnchor, removeAfter: 10)
-                    
-                   
-                    /*
-                     Text to speech
-                     */
-                    let utterance = AVSpeechUtterance(string: text)
-                    utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-                    //utterance.rate = 0.1
-
-                    let synthesizer = AVSpeechSynthesizer()
-                    synthesizer.speak(utterance)
-                   
-
-                    // 8. Visualize the center of the face (if any was found) for three seconds.
-                    //    It is possible that this is nil, e.g. if there was no face close enough to the tap location.
-                    if let centerOfFace = centerOfFace {
-                        let faceAnchor = AnchorEntity(world: centerOfFace)
-                        faceAnchor.name = text
-                        faceAnchor.addChild(self.sphere(radius: 0.01, color: .blue))
-                        self.arView.scene.addAnchor(faceAnchor, removeAfter: 10)
-                    }
-                }
-            }
-    }
-    
     func addAnnotation(rectOfInterest rect: CGRect, text: String) {
         let point = CGPoint(x: rect.midX, y: rect.midY)
         
@@ -302,9 +245,6 @@ class ViewController: UIViewController, ARSessionDelegate {
             //    Classifications are available per face (in the geometric sense, not human faces).
             nearbyFaceWithClassification(to: result.worldTransform.position) { (centerOfFace, classification, anchorDistance) in
                 // TODO: Get the distance value
-                
-                
-                
                 //let anchorDistanceString = String(format: "%.2f", anchorDistance)
                 var objectDirectionString = ""
                 
@@ -325,7 +265,7 @@ class ViewController: UIViewController, ARSessionDelegate {
                 
                 // If object is already identified, just skips
                 if (alreadyFoundObject != nil){
-                    synthesizer.speak(utterance)
+                    //synthesizer.speak(utterance)
                     return
                 }
                 
@@ -349,9 +289,9 @@ class ViewController: UIViewController, ARSessionDelegate {
                     let textAnchor = AnchorEntity(world: resultWithCameraOrientation.matrix)
                     textAnchor.addChild(textEntity)
                     textAnchor.name = "TEXT NAME"
-                    self.arView.scene.addAnchor(textAnchor, removeAfter: 10)
+                    self.arView.scene.addAnchor(textAnchor, text: text, removeAfter: 10)
                     
-                    synthesizer.speak(utterance)
+                    //synthesizer.speak(utterance)
                    
                     // 8. Visualize the center of the face (if any was found) for three seconds.
                     //    It is possible that this is nil, e.g. if there was no face close enough to the tap location.
@@ -359,7 +299,7 @@ class ViewController: UIViewController, ARSessionDelegate {
                         let faceAnchor = AnchorEntity(world: centerOfFace)
                         faceAnchor.name = text
                         faceAnchor.addChild(self.sphere(radius: 0.01, color: .blue))
-                        self.arView.scene.addAnchor(faceAnchor, removeAfter: 10)
+                        self.arView.scene.addAnchor(faceAnchor, text: text, removeAfter: 10)
                     }
                 }
             }

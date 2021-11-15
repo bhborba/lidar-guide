@@ -11,7 +11,7 @@ import RealityKit
 extension Scene {
     // Add an anchor and remove it from the scene after the specified number of seconds.
 /// - Tag: AddAnchorExtension
-    func addAnchor(_ anchor: HasAnchoring, removeAfter seconds: TimeInterval) {
+    func addAnchor(_ anchor: HasAnchoring, text: String, removeAfter seconds: TimeInterval) {
         
         guard let model = anchor.children.first as? HasPhysics else {
             return
@@ -29,6 +29,18 @@ extension Scene {
                                              mode: .kinematic)
      
         model.name = "Object"
+        
+        do {  let audioResource = try AudioFileResource.load(named: text + ".mp3",
+                                                          in: nil,
+                                                   inputMode: .spatial,
+                                             loadingStrategy: .preload,
+                                                        shouldLoop: true)
+            model.playAudio(audioResource)
+            
+        } catch(let error) {
+            print(error)
+        }
+        
         addAnchor(anchor)
         // Making the physics body dynamic at this time will let the model be affected by forces.
         Timer.scheduledTimer(withTimeInterval: seconds, repeats: false) { (timer) in
