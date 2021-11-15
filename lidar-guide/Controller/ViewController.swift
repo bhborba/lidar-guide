@@ -160,22 +160,6 @@ class ViewController: UIViewController, ARSessionDelegate {
                 timer.invalidate()
             }
         }
-        
-        /** Acesso ao depth data*/
-        //guard let depthData = frame.sceneDepth else { return }
-        //guard let smoothedSceneDepth = frame.smoothedSceneDepth else { return }
-      
-        /*let arData = ARData(depthImage: depthData.depthMap,
-                                    confidenceImage: depthData.confidenceMap,
-                          depthSmoothImage: smoothedSceneDepth.depthMap,
-                          confidenceSmoothImage: smoothedSceneDepth.confidenceMap,
-                          colorImage: frame.capturedImage,
-                          cameraIntrinsics: frame.camera.intrinsics,
-                          cameraResolution: frame.camera.imageResolution,
-                          deviceOrientation: UIDevice.current.orientation,
-                          screenResolution: UIScreen.main.bounds.size)*/
-        //myFeedView.updateFeed(pixelBuffer: arData.depthImage)
-        // execute change map setting*/
     }
     
     /**
@@ -215,35 +199,6 @@ class ViewController: UIViewController, ARSessionDelegate {
     func performDetection() {
         guard let pixelBuffer = arView.session.currentFrame?.capturedImage else { return }
         
-        guard let frame = arView.session.currentFrame else { return }
-        let meshAnchors = frame.anchors.compactMap { $0 as? ARMeshAnchor }
-        
-        // Perform the search asynchronously in order not to stall rendering.
-        /*DispatchQueue.global().async {
-            for anchor in meshAnchors {
-                // Get the semantic classification of the face and finish the search.
-                //let classification: ARMeshClassification = anchor.geometry.classificationOf(faceWithIndex: index)
-                for index in 0..<anchor.geometry.faces.count {
-                    // Get the center of the face so that we can compare it to the given location.
-                    let geometricCenterOfFace = anchor.geometry.centerOf(faceWithIndex: index)
-                    
-                    // Convert the face's center to world coordinates.
-                    var centerLocalTransform = matrix_identity_float4x4
-                    centerLocalTransform.columns.3 = SIMD4<Float>(geometricCenterOfFace.0, geometricCenterOfFace.1, geometricCenterOfFace.2, 1)
-                    let centerWorldPosition = (anchor.transform * centerLocalTransform).position
-                    
-                        // Get the semantic classification of the face and finish the search.
-                        let classification: ARMeshClassification = anchor.geometry.classificationOf(faceWithIndex: index)
-                        if (classification.description == "Door"){
-                            self.addNotationMesh(rectOfInterest: centerWorldPosition,
-                                               text: classification.description)
-                            return
-                        }
-                }
-            }
-            
-        }*/
-        
         objectDetectionService.detect(on: .init(pixelBuffer: pixelBuffer)) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -256,6 +211,7 @@ class ViewController: UIViewController, ARSessionDelegate {
                                    text: response.classification)
             
             case .failure(let error):
+                print(error)
                 break
             }
         }
@@ -326,7 +282,6 @@ class ViewController: UIViewController, ARSessionDelegate {
          */
         var utterance = AVSpeechUtterance(string: text)
         utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-        //utterance.rate = 0.1
         let synthesizer = AVSpeechSynthesizer()
         
         // Find for an already placed objetc
@@ -339,18 +294,11 @@ class ViewController: UIViewController, ARSessionDelegate {
         
         if let result = arView.raycast(from: point, allowing: .estimatedPlane, alignment: .any).first {
             
-            // ...
-            // 2. Visualize the intersection point of the ray with the real-world surface.
-            //let resultAnchor = AnchorEntity(world: result.worldTransform)
-            
-            //resultAnchor.addChild(sphere(radius: 0.01, color: .lightGray))
-            //arView.scene.addAnchor(resultAnchor, removeAfter: 3)
-            
             // 3. Try to get a classification near the tap location.
             //    Classifications are available per face (in the geometric sense, not human faces).
             nearbyFaceWithClassification(to: result.worldTransform.position) { (centerOfFace, classification, anchorDistance) in
-                
-                let anchorDistanceString = String(format: "%.2f", anchorDistance)
+                // TODO: Get the distance value
+                //let anchorDistanceString = String(format: "%.2f", anchorDistance)
                 
                 // Get object position (left/right)
                 if(pointX > middleX){
@@ -421,34 +369,6 @@ class ViewController: UIViewController, ARSessionDelegate {
     
     private func onSessionUpdate(for frame: ARFrame, trackingState: ARCamera.TrackingState) {
         isLoopShouldContinue = false
-
-        // Update the UI to provide feedback on the state of the AR experience.
-        let message: String
-        
-        switch trackingState {
-        case .normal where frame.anchors.isEmpty:
-            // No planes detected; provide instructions for this app's AR interactions.
-            message = "Move the device around to detect horizontal and vertical surfaces."
-            
-        case .notAvailable:
-            message = "Tracking unavailable."
-            
-        case .limited(.excessiveMotion):
-            message = "Tracking limited - Move the device more slowly."
-            
-        case .limited(.insufficientFeatures):
-            message = "Tracking limited - Point the device at an area with visible surface detail, or improve lighting conditions."
-            
-        case .limited(.initializing):
-            message = "Initializing AR session."
-            
-        default:
-            // No feedback needed when tracking is normal and planes are visible.
-            // (Nor when in unreachable limited-tracking states.)
-            message = ""
-            isLoopShouldContinue = true
-            loopObjectDetection()
-        }
     }
     
     func sphere(radius: Float, color: UIColor) -> ModelEntity {
