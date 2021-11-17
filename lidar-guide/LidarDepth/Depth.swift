@@ -13,8 +13,6 @@ class Depth {
     private var depthData:ARDepthData?
     init(arARSession:ARSession,arConfiguration:ARConfiguration) {
         self.arARSession=arARSession
-        //arConfiguration.frameSemantics = .sceneDepth
-        //arARSession.run(arConfiguration)
         depthData=arARSession.currentFrame?.sceneDepth
     }
     //Gain depthUIimage
