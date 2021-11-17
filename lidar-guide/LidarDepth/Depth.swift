@@ -13,8 +13,6 @@ class Depth {
     private var depthData:ARDepthData?
     init(arARSession:ARSession,arConfiguration:ARConfiguration) {
         self.arARSession=arARSession
-        //arConfiguration.frameSemantics = .sceneDepth
-        //arARSession.run(arConfiguration)
         depthData=arARSession.currentFrame?.sceneDepth
     }
     //Gain depthUIimage
@@ -34,7 +32,7 @@ class Depth {
             CVPixelBufferLockBaseAddress(depth, CVPixelBufferLockFlags(rawValue: 0))
             let floatBuffer = unsafeBitCast(CVPixelBufferGetBaseAddress(depth), to: UnsafeMutablePointer<Float32>.self)
             var isTooClose = false
-            // Esquerda
+            
             for y in 0...depthHeight-1 {
                 for x in 0...depthWidth-1 {
                     let distanceAtXYPoint = floatBuffer[y*depthWidth+x]
@@ -45,9 +43,8 @@ class Depth {
                     depthFloatData.set(x: x, y: y, floatData: distanceAtXYPoint)
                 }
             }
-            //let isTooClose = depthFloatData.getIsTooClose()
+        
             if (isTooClose){
-               // depthFloatData.setIsTooClose(value: true)
                 depthFloatData.getClearestDirection()
             }
 
