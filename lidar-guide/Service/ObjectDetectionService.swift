@@ -54,6 +54,7 @@ private extension ObjectDetectionService {
                 return
         }
         
+        let transform = CGAffineTransform(scaleX: -1, y: -1)
         let response = Response(boundingBox: result.boundingBox,
                                 classification: classification.identifier)
         

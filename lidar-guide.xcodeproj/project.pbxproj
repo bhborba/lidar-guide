@@ -23,7 +23,6 @@
 		F149206C26F7AFD5002A8EC6 /* UIDevice+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F149206B26F7AFD5002A8EC6 /* UIDevice+Extension.swift */; };
 		F149206E26F7B190002A8EC6 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F149206D26F7B190002A8EC6 /* Throttler.swift */; };
 		F149207026F7B699002A8EC6 /* SCNVector3+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F149206F26F7B699002A8EC6 /* SCNVector3+Extension.swift */; };
-		F149207226F7B817002A8EC6 /* BubbleNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F149207126F7B817002A8EC6 /* BubbleNode.swift */; };
 		F154B1CC2742C5E000F23CF4 /* baseball_bat.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F154B17C2742C5DC00F23CF4 /* baseball_bat.mp3 */; };
 		F154B1CD2742C5E000F23CF4 /* hair drier.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F154B17D2742C5DC00F23CF4 /* hair drier.mp3 */; };
 		F154B1CE2742C5E000F23CF4 /* boat.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F154B17E2742C5DC00F23CF4 /* boat.mp3 */; };
@@ -131,7 +130,6 @@
 		F149206B26F7AFD5002A8EC6 /* UIDevice+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Extension.swift"; sourceTree = "<group>"; };
 		F149206D26F7B190002A8EC6 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
 		F149206F26F7B699002A8EC6 /* SCNVector3+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SCNVector3+Extension.swift"; sourceTree = "<group>"; };
-		F149207126F7B817002A8EC6 /* BubbleNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BubbleNode.swift; sourceTree = "<group>"; };
 		F154B12C2742C5A200F23CF4 /* toilet.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = toilet.mp3; sourceTree = "<group>"; };
 		F154B12D2742C5A200F23CF4 /* sandwich.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = sandwich.mp3; sourceTree = "<group>"; };
 		F154B12E2742C5A200F23CF4 /* truck.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = truck.mp3; sourceTree = "<group>"; };
@@ -381,7 +379,6 @@
 				F149206826F7AF13002A8EC6 /* YOLOv3Int8LUT.mlmodel */,
 				F1198C8226E13D7C0096A7BB /* ViewController.swift */,
 				F1198C8026E13D7C0096A7BB /* SceneDelegate.swift */,
-				F149207126F7B817002A8EC6 /* BubbleNode.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -733,7 +730,6 @@
 				F1850B332702918B00E98DBE /* RoundedButton.swift in Sources */,
 				F1850B39270293DD00E98DBE /* simd_float4x4+Extension.swift in Sources */,
 				F1850B352702923500E98DBE /* Scene+Extension.swift in Sources */,
-				F149207226F7B817002A8EC6 /* BubbleNode.swift in Sources */,
 				F1198C8126E13D7C0096A7BB /* SceneDelegate.swift in Sources */,
 				F149206626F7AE69002A8EC6 /* ObjectDetectionService.swift in Sources */,
 				F1198C9726E1420E0096A7BB /* Depth.swift in Sources */,

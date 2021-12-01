@@ -50,7 +50,6 @@ class DepthData {
             setTooCloseDirection(value:"right")
         :
             setTooCloseDirection(value:"left")
-        
     }
     
     func validateIsTooClose() -> Bool {

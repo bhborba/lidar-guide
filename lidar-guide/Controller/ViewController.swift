@@ -120,19 +120,25 @@ class ViewController: UIViewController, ARSessionDelegate {
      Isso aqui chama sozinho dependendo da assinatura da funcao
      */
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        // Atualiza dados de profundidade do LiDAR
         dispatchQueue.async {
             self.updateDepthData(with: frame)
           }
         
+        // Busca coordenadas da câmera
         let transform = SCNMatrix4(frame.camera.transform)
         let orientation = SCNVector3(-transform.m31, -transform.m32, transform.m33)
         let location = SCNVector3(transform.m41, transform.m42, transform.m43)
         let currentPositionOfCamera = orientation + location
         
+        // Valida se há informações da última localização
         if let lastLocation = lastLocation {
+            // Busca diferença entre as coordenadas atual e anterior
             let speed = (lastLocation - currentPositionOfCamera).length()
+            // Se diferença for menor do que valor exigido, permite que loop de detecção continue executando
             isLoopShouldContinue = speed < 0.0085
         }
+        // Atualiza última localização com a posição atual da câmera
         lastLocation = currentPositionOfCamera
     }
     
@@ -147,19 +153,25 @@ class ViewController: UIViewController, ARSessionDelegate {
         lastProcessedFrame = frame
     
         if let newDepthData = newDepthData{
-            
+            // Busca dados de profundidade do LiDAR
             let data = newDepthData.getDepthDistance()
+            // Busca informação de possível colisão com alguma direção
             let isTooClose = data.getIsTooClose()
+            // Busca direção da colisão caso exista
             let direction = data.getTooCloseDirection()
             
+            // Troca informação da direção com colisão
             if (direction != oldDirection){
                 oldDirection = direction
             }
             
-
+            // Valida se há colisão e se timer não está sendo executado
             if (isTooClose && !timer.isValid){
+                // Chama função para iniciar timer
                 scheduledTimerWithTimeInterval()
-            } else if (!isTooClose && timer.isValid) {
+            }
+            // Caso não exista mais colisão, para execução do timer
+            else if (!isTooClose && timer.isValid) {
                 timer.invalidate()
             }
         }
@@ -189,6 +201,9 @@ class ViewController: UIViewController, ARSessionDelegate {
     }
     
     
+    /**
+            Garante que função  seja chamada no máximo uma vez
+     */
     func loopObjectDetection() {
         throttler.throttle { [weak self] in
             guard let self = self else { return }
@@ -200,17 +215,34 @@ class ViewController: UIViewController, ARSessionDelegate {
         }
     }
     
+    /**
+            Realiza detecção de objeto
+     */
     func performDetection() {
+        // Busca imagem do frame
         guard let pixelBuffer = arView.session.currentFrame?.capturedImage else { return }
         
         objectDetectionService.detect(on: .init(pixelBuffer: pixelBuffer)) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let response):
-                let rectOfInterest = VNImageRectForNormalizedRect(
+                // Converte o retângulo de interesse para o tamanho da cena
+                /*let rectOfInterest = VNImageRectForNormalizedRect(
                     response.boundingBox,
                     Int(self.arView.bounds.width),
-                    Int(self.arView.bounds.height))
+                    Int(self.arView.bounds.height))*/
+                
+                let width = self.arView.bounds.width
+                let height = width * 16 / 9
+                let offsetY = (self.arView.bounds.height - height) / 2
+                let scale = CGAffineTransform.identity.scaledBy(x: width, y: height)
+                let transform = CGAffineTransform(scaleX: 1, y: -1).translatedBy(x: 0, y: -height - offsetY)
+                let rectOfInterest = response.boundingBox.applying(scale).applying(transform)
+                
+                /*let view = UIView(frame: rectOfInterest)
+                    view.backgroundColor = .red
+                    self.view.addSubview(view)*/
+                // Adiciona anotação do objeto detectado no mundo virtual
                 self.addAnnotation(rectOfInterest: rectOfInterest,
                                    text: response.classification)
             
@@ -221,6 +253,9 @@ class ViewController: UIViewController, ARSessionDelegate {
         }
     }
     
+    /**
+        Adiciona anotação com detalhes do objeto detectado
+     */
     func addAnnotation(rectOfInterest rect: CGRect, text: String) {
         let point = CGPoint(x: rect.midX, y: rect.midY)
         
@@ -419,4 +454,3 @@ class ViewController: UIViewController, ARSessionDelegate {
         return model
     }
 }
-
