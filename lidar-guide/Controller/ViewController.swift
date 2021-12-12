@@ -10,28 +10,40 @@ import ARKit
 import AVFoundation
 
 class ViewController: UIViewController, ARSessionDelegate {
+    /**
+     Elementos visuais
+     */
+    // Visualização da câmera
     @IBOutlet weak var arView: ARView!
+    // Label de colisão
     @IBOutlet weak var directionTooClose: UILabel!
+    // Label de direção do objeto
     @IBOutlet weak var objectDirection: UILabel!
+    // Label de distância do objeto
     @IBOutlet weak var objectDistance: UILabel!
     
+    // Classe para buscar dados de profundidade
     var newDepthData:Depth?
     
+    // Timer
     var timer = Timer()
     
+    // Flag de direção
     var oldDirection = "";
     
-    var lastProcessedFrame: ARFrame?
-    
+    // fila de Threads em paralelo
     let dispatchQueue = DispatchQueue(label:"con",attributes:.concurrent)
     
-    // the mechanism that ensures a function is called at most once every defined time period
+    // garante que uma função seja chamada no máximo uma vez a cada período de tempo definido
     let throttler = Throttler(minimumDelay: 1, queue: .global(qos: .userInteractive))
     
+    // Informação de última localização (para velocidade da detecção de objetos)
     var lastLocation: SCNVector3?
     
+    // Flag de loop para detecção de objetos
     var isLoopShouldContinue = true
     
+    // Serviço de detecção de objetos
     var objectDetectionService = ObjectDetectionService()
     
     override func viewDidLoad() {
@@ -55,23 +67,19 @@ class ViewController: UIViewController, ARSessionDelegate {
         // ARView on its own does not turn on mesh classification.
         arView.automaticallyConfigureSession = false
         let configuration = ARWorldTrackingConfiguration()
-        
         configuration.sceneReconstruction = .meshWithClassification
-        
         configuration.environmentTexturing = .automatic
-        
         
         // Add plane detection
         configuration.planeDetection = [.horizontal, .vertical]
         
-        /** Adicionado sceneDepth **/
+        // Adicionado sceneDepth
         configuration.frameSemantics = [.sceneDepth]
     
-        
         arView.session.run(configuration)
         
         // Configura classe para trabalhar com os valores de profundidade
-        newDepthData = Depth(arARSession: arView.session, arConfiguration: configuration)
+        newDepthData = Depth(arARSession: arView.session)
         
         // Play audio even with de silent mode on
         do {
@@ -88,6 +96,9 @@ class ViewController: UIViewController, ARSessionDelegate {
         UIApplication.shared.isIdleTimerDisabled = true
     }
     
+    /**
+        Em caso de erro na AR Session, apresenta informacoes
+     */
     func session(_ session: ARSession, didFailWithError error: Error) {
         guard error is ARError else { return }
         let errorWithInfo = error as NSError
@@ -108,16 +119,8 @@ class ViewController: UIViewController, ARSessionDelegate {
         }
     }
     
-    private func shouldProcessFrame(_ frame: ARFrame) -> Bool {
-      guard let lastProcessedFrame = lastProcessedFrame else {
-        // Always process the first frame
-        return true
-      }
-      return frame.timestamp - lastProcessedFrame.timestamp >= 0.032 // 32ms for 30fps
-    }
-    
     /**
-     Isso aqui chama sozinho dependendo da assinatura da funcao
+     A cada atualização de frame, chama função
      */
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
         // Atualiza dados de profundidade do LiDAR
@@ -142,15 +145,11 @@ class ViewController: UIViewController, ARSessionDelegate {
         lastLocation = currentPositionOfCamera
     }
     
-    
+    /**
+     Atualiza dados de profundidade do LiDAR
+     */
     func updateDepthData(with frame: ARFrame){
         
-        guard shouldProcessFrame(frame) else {
-          // Less than 32ms with the previous frame
-          return
-        }
-        
-        lastProcessedFrame = frame
     
         if let newDepthData = newDepthData{
             // Busca dados de profundidade do LiDAR
@@ -181,7 +180,6 @@ class ViewController: UIViewController, ARSessionDelegate {
             Timer de execucao para vibrar o celular
      */
     func scheduledTimerWithTimeInterval(){
-        // Scheduling timer to Call the function "updateCounting" with the interval of 1 seconds
         DispatchQueue.main.async {
             self.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.vibrate), userInfo: nil, repeats: true)
         }
@@ -191,7 +189,6 @@ class ViewController: UIViewController, ARSessionDelegate {
             Vibra o celular
      */
     @objc func vibrate() {
-        //print(oldDirection)
         directionTooClose.text = "too close to the " + oldDirection
         if (oldDirection == "left"){
             UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
@@ -202,13 +199,13 @@ class ViewController: UIViewController, ARSessionDelegate {
     
     
     /**
-            Garante que função  seja chamada no máximo uma vez
+            Loop para detecção de objeto
      */
     func loopObjectDetection() {
+        // Garante que função seja chamada apenas uma vez
         throttler.throttle { [weak self] in
             guard let self = self else { return }
             if self.isLoopShouldContinue {
-                
                 self.performDetection()
             }
             self.loopObjectDetection()
@@ -226,22 +223,17 @@ class ViewController: UIViewController, ARSessionDelegate {
             guard let self = self else { return }
             switch result {
             case .success(let response):
-                // Converte o retângulo de interesse para o tamanho da cena
-                /*let rectOfInterest = VNImageRectForNormalizedRect(
-                    response.boundingBox,
-                    Int(self.arView.bounds.width),
-                    Int(self.arView.bounds.height))*/
                 
+                // Converte a bounding box para o tamanho da ARView
                 let width = self.arView.bounds.width
                 let height = width * 16 / 9
                 let offsetY = (self.arView.bounds.height - height) / 2
                 let scale = CGAffineTransform.identity.scaledBy(x: width, y: height)
                 let transform = CGAffineTransform(scaleX: 1, y: -1).translatedBy(x: 0, y: -height - offsetY)
+                
+                // Coordenadas da bounding box
                 let rectOfInterest = response.boundingBox.applying(scale).applying(transform)
                 
-                /*let view = UIView(frame: rectOfInterest)
-                    view.backgroundColor = .red
-                    self.view.addSubview(view)*/
                 // Adiciona anotação do objeto detectado no mundo virtual
                 self.addAnnotation(rectOfInterest: rectOfInterest,
                                    text: response.classification)
@@ -257,16 +249,10 @@ class ViewController: UIViewController, ARSessionDelegate {
         Adiciona anotação com detalhes do objeto detectado
      */
     func addAnnotation(rectOfInterest rect: CGRect, text: String) {
+        // Converte pontos da bounding box para um CG Point
         let point = CGPoint(x: rect.midX, y: rect.midY)
         
-        /*
-         Text to speech
-         */
-        var utterance = AVSpeechUtterance(string: text)
-        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-        let synthesizer = AVSpeechSynthesizer()
-        
-        // Find for an already placed objetc
+        // Busca se objeto ja foi adicionado no mundo virtual
         let alreadyFoundObject = arView.scene.findEntity(named: text)
     
         let pointX = CGFloat(point.x)
@@ -285,12 +271,10 @@ class ViewController: UIViewController, ARSessionDelegate {
                 
                 // Get object position (left/right)
                 if(pointX > middleX){
-                    utterance = AVSpeechUtterance(string: text + " to the right")
                     objectDirectionString = text + " to the right"
                     
                 } else {
                     objectDirectionString = text + " to the left"
-                    utterance = AVSpeechUtterance(string: text + " to the left")
                 }
                 
                 DispatchQueue.main.async {
@@ -357,33 +341,15 @@ class ViewController: UIViewController, ARSessionDelegate {
         onSessionUpdate(for: frame, trackingState: frame.camera.trackingState)
     }
     
+    /**
+        A cada atualização de frame com informações de tracking da câmera
+     */
     private func onSessionUpdate(for frame: ARFrame, trackingState: ARCamera.TrackingState) {
         isLoopShouldContinue = false
-        
-        // Update the UI to provide feedback on the state of the AR experience.
-                let message: String
-
                 switch trackingState {
-                case .normal where frame.anchors.isEmpty:
-                    // No planes detected; provide instructions for this app's AR interactions.
-                    message = "Move the device around to detect horizontal and vertical surfaces."
-
-                case .notAvailable:
-                    message = "Tracking unavailable."
-
-                case .limited(.excessiveMotion):
-                    message = "Tracking limited - Move the device more slowly."
-
-                case .limited(.insufficientFeatures):
-                    message = "Tracking limited - Point the device at an area with visible surface detail, or improve lighting conditions."
-
-                case .limited(.initializing):
-                    message = "Initializing AR session."
-
                 default:
                     // No feedback needed when tracking is normal and planes are visible.
                     // (Nor when in unreachable limited-tracking states.)
-                    message = ""
                     isLoopShouldContinue = true
                     loopObjectDetection()
                 }

@@ -13,7 +13,6 @@
 		F1198C8626E13D7C0096A7BB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F1198C8426E13D7C0096A7BB /* Main.storyboard */; };
 		F1198C8826E13D7D0096A7BB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1198C8726E13D7D0096A7BB /* Assets.xcassets */; };
 		F1198C8B26E13D7D0096A7BB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F1198C8926E13D7D0096A7BB /* LaunchScreen.storyboard */; };
-		F1198C9426E13E5A0096A7BB /* ARData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1198C9326E13E5A0096A7BB /* ARData.swift */; };
 		F1198C9726E1420E0096A7BB /* Depth.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1198C9526E1420E0096A7BB /* Depth.swift */; };
 		F1198C9826E1420E0096A7BB /* DepthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1198C9626E1420E0096A7BB /* DepthData.swift */; };
 		F135D50C27121385006D70BA /* ARMeshClassification+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F135D50B27121385006D70BA /* ARMeshClassification+Extension.swift */; };
@@ -103,9 +102,6 @@
 		F154B2192742C5E100F23CF4 /* stop_sign.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F154B1C92742C5E000F23CF4 /* stop_sign.mp3 */; };
 		F154B21A2742C5E100F23CF4 /* bed.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F154B1CA2742C5E000F23CF4 /* bed.mp3 */; };
 		F154B21B2742C5E100F23CF4 /* kite.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F154B1CB2742C5E000F23CF4 /* kite.mp3 */; };
-		F15E591D26FFD9F2000AB7C6 /* IndoorObjects.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = F15E591C26FFD9F2000AB7C6 /* IndoorObjects.mlmodel */; };
-		F15E591F270128A2000AB7C6 /* IndoorMeh.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = F15E591E270128A2000AB7C6 /* IndoorMeh.mlmodel */; };
-		F1850B332702918B00E98DBE /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1850B322702918B00E98DBE /* RoundedButton.swift */; };
 		F1850B352702923500E98DBE /* Scene+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1850B342702923500E98DBE /* Scene+Extension.swift */; };
 		F1850B372702936300E98DBE /* ARMeshGeometry+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1850B362702936300E98DBE /* ARMeshGeometry+Extension.swift */; };
 		F1850B39270293DD00E98DBE /* simd_float4x4+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1850B38270293DD00E98DBE /* simd_float4x4+Extension.swift */; };
@@ -120,7 +116,6 @@
 		F1198C8726E13D7D0096A7BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F1198C8A26E13D7D0096A7BB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F1198C8C26E13D7D0096A7BB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F1198C9326E13E5A0096A7BB /* ARData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARData.swift; sourceTree = "<group>"; };
 		F1198C9526E1420E0096A7BB /* Depth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Depth.swift; sourceTree = "<group>"; };
 		F1198C9626E1420E0096A7BB /* DepthData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DepthData.swift; sourceTree = "<group>"; };
 		F135D50B27121385006D70BA /* ARMeshClassification+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARMeshClassification+Extension.swift"; sourceTree = "<group>"; };
@@ -290,9 +285,6 @@
 		F154B1C92742C5E000F23CF4 /* stop_sign.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = stop_sign.mp3; path = "lidar-guide/Assets/stop_sign.mp3"; sourceTree = SOURCE_ROOT; };
 		F154B1CA2742C5E000F23CF4 /* bed.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = bed.mp3; path = "lidar-guide/Assets/bed.mp3"; sourceTree = SOURCE_ROOT; };
 		F154B1CB2742C5E000F23CF4 /* kite.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = kite.mp3; path = "lidar-guide/Assets/kite.mp3"; sourceTree = SOURCE_ROOT; };
-		F15E591C26FFD9F2000AB7C6 /* IndoorObjects.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = IndoorObjects.mlmodel; sourceTree = "<group>"; };
-		F15E591E270128A2000AB7C6 /* IndoorMeh.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = IndoorMeh.mlmodel; sourceTree = "<group>"; };
-		F1850B322702918B00E98DBE /* RoundedButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
 		F1850B342702923500E98DBE /* Scene+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Scene+Extension.swift"; sourceTree = "<group>"; };
 		F1850B362702936300E98DBE /* ARMeshGeometry+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARMeshGeometry+Extension.swift"; sourceTree = "<group>"; };
 		F1850B38270293DD00E98DBE /* simd_float4x4+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "simd_float4x4+Extension.swift"; sourceTree = "<group>"; };
@@ -345,7 +337,6 @@
 			children = (
 				F1198C9526E1420E0096A7BB /* Depth.swift */,
 				F1198C9626E1420E0096A7BB /* DepthData.swift */,
-				F1198C9326E13E5A0096A7BB /* ARData.swift */,
 			);
 			path = LidarDepth;
 			sourceTree = "<group>";
@@ -372,9 +363,6 @@
 		F149206726F7AEAD002A8EC6 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				F1850B322702918B00E98DBE /* RoundedButton.swift */,
-				F15E591E270128A2000AB7C6 /* IndoorMeh.mlmodel */,
-				F15E591C26FFD9F2000AB7C6 /* IndoorObjects.mlmodel */,
 				F1198C8426E13D7C0096A7BB /* Main.storyboard */,
 				F149206826F7AF13002A8EC6 /* YOLOv3Int8LUT.mlmodel */,
 				F1198C8226E13D7C0096A7BB /* ViewController.swift */,
@@ -715,19 +703,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				F149206926F7AF13002A8EC6 /* YOLOv3Int8LUT.mlmodel in Sources */,
-				F1198C9426E13E5A0096A7BB /* ARData.swift in Sources */,
 				F1198C9826E1420E0096A7BB /* DepthData.swift in Sources */,
 				F149207026F7B699002A8EC6 /* SCNVector3+Extension.swift in Sources */,
-				F15E591D26FFD9F2000AB7C6 /* IndoorObjects.mlmodel in Sources */,
 				F149206C26F7AFD5002A8EC6 /* UIDevice+Extension.swift in Sources */,
-				F15E591F270128A2000AB7C6 /* IndoorMeh.mlmodel in Sources */,
 				F1850B372702936300E98DBE /* ARMeshGeometry+Extension.swift in Sources */,
 				F140915126E57A3200336D35 /* DispatchQueue+Extensions.swift in Sources */,
 				F1198C8326E13D7C0096A7BB /* ViewController.swift in Sources */,
 				F1198C7F26E13D7C0096A7BB /* AppDelegate.swift in Sources */,
 				F135D50C27121385006D70BA /* ARMeshClassification+Extension.swift in Sources */,
 				F149206E26F7B190002A8EC6 /* Throttler.swift in Sources */,
-				F1850B332702918B00E98DBE /* RoundedButton.swift in Sources */,
 				F1850B39270293DD00E98DBE /* simd_float4x4+Extension.swift in Sources */,
 				F1850B352702923500E98DBE /* Scene+Extension.swift in Sources */,
 				F1198C8126E13D7C0096A7BB /* SceneDelegate.swift in Sources */,
