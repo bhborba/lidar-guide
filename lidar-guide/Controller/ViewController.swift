@@ -81,7 +81,7 @@ class ViewController: UIViewController, ARSessionDelegate {
         // Configura classe para trabalhar com os valores de profundidade
         newDepthData = Depth(arARSession: arView.session)
         
-        // Play audio even with de silent mode on
+        // Play audio even with the silent mode on
         do {
               try AVAudioSession.sharedInstance().setCategory(.playback)
            } catch(let error) {
@@ -262,7 +262,7 @@ class ViewController: UIViewController, ARSessionDelegate {
         
         if let result = arView.raycast(from: point, allowing: .estimatedPlane, alignment: .any).first {
             
-            // 3. Try to get a classification near the tap location.
+            // 3. Try to get a classification near the location.
             //    Classifications are available per face (in the geometric sense, not human faces).
             nearbyFaceWithClassification(to: result.worldTransform.position) { (centerOfFace, classification, anchorDistance) in
                 // TODO: Get the distance value
@@ -309,11 +309,9 @@ class ViewController: UIViewController, ARSessionDelegate {
                     textAnchor.addChild(textEntity)
                     textAnchor.name = "TEXT NAME"
                     self.arView.scene.addAnchor(textAnchor, text: text, removeAfter: 10)
-                    
-                    //synthesizer.speak(utterance)
                    
                     // 8. Visualize the center of the face (if any was found) for three seconds.
-                    //    It is possible that this is nil, e.g. if there was no face close enough to the tap location.
+                    //    It is possible that this is nil, e.g. if there was no face close enough to the location.
                     if let centerOfFace = centerOfFace {
                         let faceAnchor = AnchorEntity(world: centerOfFace)
                         faceAnchor.name = text

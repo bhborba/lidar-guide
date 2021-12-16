@@ -108,6 +108,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F106AD55276C04F400BF80A4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F1198C7B26E13D7C0096A7BB /* lidar-guide.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "lidar-guide.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1198C7E26E13D7C0096A7BB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F1198C8026E13D7C0096A7BB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -304,6 +305,7 @@
 		F1198C7226E13D7C0096A7BB = {
 			isa = PBXGroup;
 			children = (
+				F106AD55276C04F400BF80A4 /* README.md */,
 				F154B12B2742C5A200F23CF4 /* Assets */,
 				F140915026E57A3200336D35 /* DispatchQueue+Extensions.swift */,
 				F1198C7D26E13D7C0096A7BB /* lidar-guide */,
